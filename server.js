@@ -14,26 +14,50 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('.'));
 
-// Google Maps API 代理端點
-app.get('/api/maps-config', (req, res) => {
-    // 只返回必要的配置，不暴露完整的 API key
-    res.json({
-        mapsApiUrl: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}&callback=initMap&libraries=places`
-    });
-});
-
-// Geocoding API 代理
+// Nominatim Geocoding API (OpenStreetMap)
 app.post('/api/geocode', async (req, res) => {
     const { address } = req.body;
     
     try {
+        // 使用 Nominatim API 進行地理編碼
         const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.GOOGLE_MAPS_API_KEY}`
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1&addressdetails=1`,
+            {
+                headers: {
+                    'User-Agent': 'RentalExperienceMap/1.0' // Nominatim 要求提供 User-Agent
+                }
+            }
         );
         const data = await response.json();
-        res.json(data);
+        
+        // 轉換為類似 Google Maps API 的格式
+        if (data && data.length > 0) {
+            const result = data[0];
+            const formattedResponse = {
+                status: 'OK',
+                results: [{
+                    formatted_address: result.display_name,
+                    geometry: {
+                        location: {
+                            lat: parseFloat(result.lat),
+                            lng: parseFloat(result.lon)
+                        }
+                    }
+                }]
+            };
+            res.json(formattedResponse);
+        } else {
+            res.json({
+                status: 'ZERO_RESULTS',
+                results: []
+            });
+        }
     } catch (error) {
-        res.status(500).json({ error: 'Geocoding failed' });
+        console.error('Geocoding 錯誤:', error);
+        res.status(500).json({ 
+            status: 'ERROR',
+            error: 'Geocoding failed' 
+        });
     }
 });
 

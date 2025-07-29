@@ -1,6 +1,6 @@
 # 租屋經驗分享地圖
 
-這是一個基於 Google Maps API 的租屋經驗分享平台，讓用戶可以在地圖上標記和分享他們的租屋經驗，並提供評分功能。
+這是一個基於 OpenStreetMap 的租屋經驗分享平台，讓用戶可以在地圖上標記和分享他們的租屋經驗，並提供評分功能。
 
 ## 功能特色
 
@@ -18,7 +18,7 @@
 - **前端**: HTML5, CSS3, JavaScript
 - **後端**: Node.js, Express.js
 - **資料庫**: SQLite3
-- **地圖服務**: Google Maps API
+- **地圖服務**: OpenStreetMap + Leaflet.js
 - **其他**: CORS, dotenv
 
 ## 資料庫結構
@@ -70,10 +70,9 @@ cd rental-experience-map
 npm install
 ```
 
-3. 設置環境變數
-創建 `.env` 文件並添加你的 Google Maps API Key:
+3. 設置環境變數（可選）
+創建 `.env` 文件設置端口：
 ```
-GOOGLE_MAPS_API_KEY=your_api_key_here
 PORT=3000
 ```
 
@@ -119,13 +118,31 @@ npm start
 npm run dev
 ```
 
+## 地圖服務變更
+
+本專案已從 Google Maps 遷移至 OpenStreetMap：
+
+### 優點
+- ✅ 完全免費，無需 API Key
+- ✅ 開源且社群驅動
+- ✅ 無使用限制
+- ✅ 支援多種地圖樣式
+- ✅ 良好的隱私保護
+
+### 地理編碼服務
+- 使用 Nominatim API（OpenStreetMap 官方地理編碼服務）
+- 免費且無需註冊
+- 支援全球地址查詢
+
+### 測試功能
+訪問 `/test-osm.html` 來測試 OpenStreetMap 整合功能
+
 ## 注意事項
 
-- 需要有效的 Google Maps API Key
-- API Key 需要啟用 Maps JavaScript API 和 Geocoding API
-- 建議設置 API Key 的使用限制以確保安全
+- 不再需要 Google Maps API Key
 - 資料庫文件 `rental_database.db` 會自動創建
 - 首次運行會自動初始化資料庫並插入示例資料
+- Nominatim API 有使用頻率限制，建議合理使用
 
 ## 貢獻
 

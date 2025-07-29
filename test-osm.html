@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenStreetMap 測試</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .test-controls {
+            margin: 20px 0;
+        }
+        button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #1976D2;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>OpenStreetMap 整合測試</h1>
+    
+    <div class="test-controls">
+        <button onclick="testGeocoding()">測試地理編碼</button>
+        <button onclick="addTestMarker()">添加測試標記</button>
+        <button onclick="resetMap()">重置地圖</button>
+    </div>
+    
+    <div id="map"></div>
+    
+    <div class="info">
+        <h3>測試結果：</h3>
+        <div id="result">等待測試...</div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let map;
+        let markers = [];
+        
+        // 初始化地圖
+        function initMap() {
+            map = L.map('map').setView([25.0330, 121.5654], 12);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(map);
+            
+            updateResult('地圖初始化完成！使用 OpenStreetMap 圖層。');
+        }
+        
+        // 測試地理編碼
+        async function testGeocoding() {
+            const address = '台北101';
+            updateResult('正在測試地理編碼...');
+            
+            try {
+                const response = await fetch('/api/geocode', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ address: address })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'OK' && data.results.length > 0) {
+                    const location = data.results[0].geometry.location;
+                    const formattedAddress = data.results[0].formatted_address;
+                    
+                    // 在地圖上標記位置
+                    const marker = L.marker([location.lat, location.lng])
+                        .addTo(map)
+                        .bindPopup(`<b>${address}</b><br>${formattedAddress}`)
+                        .openPopup();
+                    
+                    markers.push(marker);
+                    map.setView([location.lat, location.lng], 15);
+                    
+                    updateResult(`地理編碼成功！<br>
+                        查詢地址: ${address}<br>
+                        完整地址: ${formattedAddress}<br>
+                        座標: ${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`);
+                } else {
+                    updateResult('地理編碼失敗：找不到該地址');
+                }
+            } catch (error) {
+                updateResult(`地理編碼錯誤: ${error.message}`);
+            }
+        }
+        
+        // 添加測試標記
+        function addTestMarker() {
+            const customIcon = L.divIcon({
+                html: `<div style="background-color: #FF5722; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">房</div>`,
+                className: 'custom-marker',
+                iconSize: [30, 30],
+                iconAnchor: [15, 15]
+            });
+            
+            const marker = L.marker([25.0330, 121.5654], {
+                icon: customIcon,
+                title: '測試標記'
+            }).addTo(map);
+            
+            marker.bindPopup('這是一個測試標記，使用自定義圖標！').openPopup();
+            markers.push(marker);
+            
+            updateResult('已添加自定義測試標記！');
+        }
+        
+        // 重置地圖
+        function resetMap() {
+            markers.forEach(marker => map.removeLayer(marker));
+            markers = [];
+            map.setView([25.0330, 121.5654], 12);
+            updateResult('地圖已重置');
+        }
+        
+        // 更新結果顯示
+        function updateResult(message) {
+            document.getElementById('result').innerHTML = message;
+        }
+        
+        // 頁面載入時初始化
+        document.addEventListener('DOMContentLoaded', initMap);
+    </script>
+</body>
+</html>

@@ -3,42 +3,17 @@ let rentalData = [];
 
 let map;
 let markers = [];
-let infoWindow;
-
-// 動態載入 Google Maps API
-async function loadGoogleMapsAPI() {
-    try {
-        const response = await fetch('/api/maps-config');
-        const config = await response.json();
-        
-        const script = document.createElement('script');
-        script.src = config.mapsApiUrl;
-        script.async = true;
-        script.defer = true;
-        document.head.appendChild(script);
-    } catch (error) {
-        console.error('載入 Google Maps API 失敗:', error);
-    }
-}
 
 // 初始化地圖
 function initMap() {
     // 以台北市為中心
-    const taipei = { lat: 25.0330, lng: 121.5654 };
+    map = L.map('map').setView([25.0330, 121.5654], 12);
     
-    map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 12,
-        center: taipei,
-        styles: [
-            {
-                featureType: "poi",
-                elementType: "labels",
-                stylers: [{ visibility: "off" }]
-            }
-        ]
-    });
-    
-    infoWindow = new google.maps.InfoWindow();
+    // 添加 OpenStreetMap 圖層
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
+    }).addTo(map);
     
     // 載入租屋資料
     loadRentalData();
@@ -55,31 +30,27 @@ async function loadRentalData() {
         rentalList.innerHTML = '';
         
         // 清除現有標記
-        markers.forEach(marker => marker.setMap(null));
+        markers.forEach(marker => map.removeLayer(marker));
         markers = [];
         
         rentalData.forEach(rental => {
-            // 在地圖上添加標記
-            const marker = new google.maps.Marker({
-                position: { lat: rental.lat, lng: rental.lng },
-                map: map,
-                title: rental.address,
-                icon: {
-                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                        <svg width="30" height="40" viewBox="0 0 30 40" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M15 0C6.716 0 0 6.716 0 15c0 8.284 15 25 15 25s15-16.716 15-25C30 6.716 23.284 0 15 0z" fill="#FF5722"/>
-                            <circle cx="15" cy="15" r="8" fill="white"/>
-                            <text x="15" y="19" text-anchor="middle" font-family="Arial" font-size="12" fill="#FF5722">房</text>
-                        </svg>
-                    `),
-                    scaledSize: new google.maps.Size(30, 40),
-                    anchor: new google.maps.Point(15, 40)
-                }
+            // 創建自定義圖標
+            const customIcon = L.divIcon({
+                html: `<div style="background-color: #FF5722; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">房</div>`,
+                className: 'custom-marker',
+                iconSize: [30, 30],
+                iconAnchor: [15, 15]
             });
             
+            // 在地圖上添加標記
+            const marker = L.marker([rental.lat, rental.lng], {
+                icon: customIcon,
+                title: rental.address
+            }).addTo(map);
+            
             // 點擊標記顯示資訊
-            marker.addListener('click', () => {
-                showRentalInfo(rental);
+            marker.on('click', () => {
+                showRentalInfo(rental, marker);
                 highlightRentalItem(rental.id);
             });
             
@@ -125,10 +96,17 @@ function createRentalItem(rental) {
         // 避免按鈕點擊觸發項目點擊
         if (e.target.classList.contains('add-rating-btn')) return;
         
-        const position = { lat: rental.lat, lng: rental.lng };
-        map.setCenter(position);
-        map.setZoom(16);
-        showRentalInfo(rental);
+        map.setView([rental.lat, rental.lng], 16);
+        
+        // 找到對應的標記並顯示資訊
+        const marker = markers.find(m => {
+            const pos = m.getLatLng();
+            return Math.abs(pos.lat - rental.lat) < 0.0001 && Math.abs(pos.lng - rental.lng) < 0.0001;
+        });
+        
+        if (marker) {
+            showRentalInfo(rental, marker);
+        }
         highlightRentalItem(rental.id);
     });
     
@@ -136,28 +114,30 @@ function createRentalItem(rental) {
 }
 
 // 顯示租屋資訊
-function showRentalInfo(rental) {
+function showRentalInfo(rental, marker) {
+    const starsHtml = generateStarsHtml(rental.overall_rating || 0);
+    const rentPrice = rental.rent_price ? `NT${rental.rent_price.toLocaleString()}` : '價格未提供';
+    const roomType = rental.room_type || '房型未提供';
+    
     const content = `
         <div style="max-width: 300px;">
             <h3 style="margin: 0 0 10px 0; color: #333;">${rental.address}</h3>
-            <p style="margin: 0; line-height: 1.4; color: #666;">${rental.description}</p>
+            <div style="margin-bottom: 8px;">
+                <span style="color: #ffc107; font-size: 16px;">${starsHtml}</span>
+                <span style="font-size: 12px; color: #666; margin-left: 8px;">${(rental.overall_rating || 0).toFixed(1)}</span>
+            </div>
+            <p style="margin: 0 0 8px 0; line-height: 1.4; color: #666;">${rental.description}</p>
+            <div style="font-size: 12px; color: #888; margin-bottom: 8px;">
+                ${roomType} | ${rentPrice}
+                ${rental.area_size ? ` | ${rental.area_size}坪` : ''}
+            </div>
             <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;">
                 <small style="color: #999;">經緯度: ${rental.lat.toFixed(4)}, ${rental.lng.toFixed(4)}</small>
             </div>
         </div>
     `;
     
-    infoWindow.setContent(content);
-    
-    // 找到對應的標記並顯示資訊窗口
-    const marker = markers.find(m => 
-        m.getPosition().lat().toFixed(4) == rental.lat.toFixed(4) && 
-        m.getPosition().lng().toFixed(4) == rental.lng.toFixed(4)
-    );
-    
-    if (marker) {
-        infoWindow.open(map, marker);
-    }
+    marker.bindPopup(content).openPopup();
 }
 
 // 高亮顯示選中的租屋項目
@@ -329,8 +309,7 @@ async function addNewRental() {
                 await loadRentalData();
                 
                 // 聚焦到新添加的位置
-                map.setCenter({ lat: location.lat, lng: location.lng });
-                map.setZoom(16);
+                map.setView([location.lat, location.lng], 16);
                 
                 alert('租屋經驗已成功添加！');
             } else {
@@ -345,7 +324,7 @@ async function addNewRental() {
     }
 }
 
-// 頁面載入時自動載入 Google Maps API
+// 頁面載入時初始化地圖
 document.addEventListener('DOMContentLoaded', () => {
-    loadGoogleMapsAPI();
+    initMap();
 });

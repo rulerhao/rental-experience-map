@@ -35,12 +35,32 @@ class Rental {
         });
     }
 
-    // 獲取所有租屋資料
-    async getAll() {
+    // 獲取所有租屋資料（支援分頁和排序）
+    async getAll(options = {}) {
         return new Promise((resolve, reject) => {
-            this.db.all("SELECT * FROM rentals ORDER BY created_at DESC", (err, rows) => {
+            const { page = 1, limit = 10, sort = 'created_at', order = 'desc' } = options;
+            const offset = (page - 1) * limit;
+            
+            // 驗證排序欄位
+            const allowedSortFields = ['created_at', 'updated_at', 'rent_price', 'overall_rating', 'address'];
+            const sortField = allowedSortFields.includes(sort) ? sort : 'created_at';
+            const sortOrder = order.toLowerCase() === 'asc' ? 'ASC' : 'DESC';
+            
+            const sql = `SELECT * FROM rentals ORDER BY ${sortField} ${sortOrder} LIMIT ? OFFSET ?`;
+            
+            this.db.all(sql, [limit, offset], (err, rows) => {
                 if (err) reject(err);
                 else resolve(rows);
+            });
+        });
+    }
+
+    // 根據ID獲取單一租屋資料
+    async getById(id) {
+        return new Promise((resolve, reject) => {
+            this.db.get("SELECT * FROM rentals WHERE id = ?", [id], (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
             });
         });
     }
@@ -53,18 +73,99 @@ class Rental {
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `);
             
-            const overall = (rentalData.landlord_rating + rentalData.location_rating + rentalData.value_rating) / 3;
+            // 如果有評分資料，計算平均分；否則設為null
+            let overall = null;
+            if (rentalData.landlord_rating && rentalData.location_rating && rentalData.value_rating) {
+                overall = (rentalData.landlord_rating + rentalData.location_rating + rentalData.value_rating) / 3;
+            }
             
             stmt.run([
                 rentalData.address, rentalData.lat, rentalData.lng, rentalData.description,
                 rentalData.rent_price, rentalData.room_type, rentalData.area_size, rentalData.facilities,
-                rentalData.landlord_rating, rentalData.location_rating, rentalData.value_rating, overall
+                rentalData.landlord_rating || null, rentalData.location_rating || null, 
+                rentalData.value_rating || null, overall
             ], function(err) {
                 if (err) reject(err);
                 else resolve({ id: this.lastID, overall_rating: overall });
             });
             
             stmt.finalize();
+        });
+    }
+
+    // 更新租屋資料
+    async update(id, rentalData) {
+        return new Promise((resolve, reject) => {
+            // 構建動態更新語句
+            const updateFields = [];
+            const values = [];
+            
+            if (rentalData.address !== undefined) {
+                updateFields.push('address = ?');
+                values.push(rentalData.address);
+            }
+            
+            if (rentalData.lat !== undefined) {
+                updateFields.push('lat = ?');
+                values.push(rentalData.lat);
+            }
+            
+            if (rentalData.lng !== undefined) {
+                updateFields.push('lng = ?');
+                values.push(rentalData.lng);
+            }
+            
+            if (rentalData.description !== undefined) {
+                updateFields.push('description = ?');
+                values.push(rentalData.description);
+            }
+            
+            if (rentalData.rent_price !== undefined) {
+                updateFields.push('rent_price = ?');
+                values.push(rentalData.rent_price);
+            }
+            
+            if (rentalData.room_type !== undefined) {
+                updateFields.push('room_type = ?');
+                values.push(rentalData.room_type);
+            }
+            
+            if (rentalData.area_size !== undefined) {
+                updateFields.push('area_size = ?');
+                values.push(rentalData.area_size);
+            }
+            
+            if (rentalData.facilities !== undefined) {
+                updateFields.push('facilities = ?');
+                values.push(rentalData.facilities);
+            }
+            
+            if (updateFields.length === 0) {
+                resolve({ id: id });
+                return;
+            }
+            
+            updateFields.push('updated_at = CURRENT_TIMESTAMP');
+            values.push(id);
+            
+            const sql = `UPDATE rentals SET ${updateFields.join(', ')} WHERE id = ?`;
+            
+            this.db.run(sql, values, function(err) {
+                if (err) reject(err);
+                else if (this.changes === 0) resolve(null);
+                else resolve({ id: id });
+            });
+        });
+    }
+
+    // 刪除租屋資料
+    async delete(id) {
+        return new Promise((resolve, reject) => {
+            this.db.run("DELETE FROM rentals WHERE id = ?", [id], function(err) {
+                if (err) reject(err);
+                else if (this.changes === 0) resolve(null);
+                else resolve({ id: id });
+            });
         });
     }
 

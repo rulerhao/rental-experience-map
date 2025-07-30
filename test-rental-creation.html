@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>測試租屋經驗新增</title>
+</head>
+<body>
+    <h1>測試租屋經驗新增功能</h1>
+    <button id="testBtn">測試新增租屋經驗</button>
+    <div id="result"></div>
+
+    <script>
+        class ApiService {
+            constructor() {
+                this.baseUrl = '/api';
+            }
+
+            async handleResponse(response) {
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || `HTTP ${response.status}: ${response.statusText}`);
+                }
+                return data;
+            }
+
+            async createRental(rentalData) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/rentals`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(rentalData)
+                    });
+                    const result = await this.handleResponse(response);
+                    return result;
+                } catch (error) {
+                    console.error('新增租屋資料錯誤:', error);
+                    throw error;
+                }
+            }
+
+            async geocodeAddress(address) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/geocoding`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ address })
+                    });
+                    const result = await this.handleResponse(response);
+                    return result.data;
+                } catch (error) {
+                    console.error('地理編碼錯誤:', error);
+                    throw error;
+                }
+            }
+        }
+
+        const apiService = new ApiService();
+
+        document.getElementById('testBtn').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '測試中...';
+
+            try {
+                // 測試地理編碼
+                console.log('開始地理編碼測試...');
+                const geocodeData = await apiService.geocodeAddress('台北市大安區忠孝東路四段1號');
+                console.log('地理編碼結果:', geocodeData);
+
+                if (geocodeData.status === 'OK' && geocodeData.results.length > 0) {
+                    const location = geocodeData.results[0].geometry.location;
+                    
+                    // 測試新增租屋資料
+                    console.log('開始新增租屋資料...');
+                    const rentalData = {
+                        address: geocodeData.results[0].formatted_address,
+                        lat: location.lat,
+                        lng: location.lng,
+                        description: '測試租屋經驗',
+                        rent_price: 15000,
+                        room_type: '套房',
+                        area_size: 10,
+                        facilities: '冷氣,網路',
+                        landlord_rating: 4,
+                        location_rating: 5,
+                        value_rating: 3
+                    };
+
+                    const rentalResult = await apiService.createRental(rentalData);
+                    console.log('新增租屋結果:', rentalResult);
+
+                    if (rentalResult.success) {
+                        resultDiv.innerHTML = `
+                            <h3>測試成功！</h3>
+                            <p>地理編碼: ${geocodeData.results[0].formatted_address}</p>
+                            <p>座標: ${location.lat}, ${location.lng}</p>
+                            <p>租屋ID: ${rentalResult.data.id}</p>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `<h3>測試失敗</h3><p>租屋資料添加失敗</p>`;
+                    }
+                } else {
+                    resultDiv.innerHTML = `<h3>測試失敗</h3><p>地理編碼失敗</p>`;
+                }
+            } catch (error) {
+                console.error('測試錯誤:', error);
+                resultDiv.innerHTML = `<h3>測試錯誤</h3><p>${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

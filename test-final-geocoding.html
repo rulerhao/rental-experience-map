@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>測試最終地理編碼</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-item { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>測試改善後的地理編碼功能</h1>
+    
+    <div>
+        <h3>測試地址：</h3>
+        <button onclick="testAddress('台北市信義區信義路五段7號')">台北市信義區信義路五段7號</button>
+        <button onclick="testAddress('台北市大安區忠孝東路四段1號')">台北市大安區忠孝東路四段1號</button>
+        <button onclick="testAddress('台北市信義區')">台北市信義區</button>
+        <button onclick="testAddress('台北101')">台北101</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script>
+        async function testAddress(address) {
+            const resultsDiv = document.getElementById('results');
+            
+            // 添加測試項目
+            const testItem = document.createElement('div');
+            testItem.className = 'test-item';
+            testItem.innerHTML = `
+                <h4>測試地址: ${address}</h4>
+                <p>測試中...</p>
+            `;
+            resultsDiv.appendChild(testItem);
+            
+            try {
+                const response = await fetch('/api/geocoding', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ address })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    testItem.className = 'test-item success';
+                    const data = result.data.results[0];
+                    testItem.innerHTML = `
+                        <h4>✅ 測試地址: ${address}</h4>
+                        <p><strong>原始地址:</strong> ${data.original_address || address}</p>
+                        <p><strong>匹配地址:</strong> ${data.matched_address || '未提供'}</p>
+                        <p><strong>格式化地址:</strong> ${data.formatted_address}</p>
+                        <p><strong>座標:</strong> ${data.geometry.location.lat}, ${data.geometry.location.lng}</p>
+                    `;
+                } else {
+                    testItem.className = 'test-item error';
+                    testItem.innerHTML = `
+                        <h4>❌ 測試地址: ${address}</h4>
+                        <p><strong>錯誤:</strong> ${result.message}</p>
+                    `;
+                }
+            } catch (error) {
+                testItem.className = 'test-item error';
+                testItem.innerHTML = `
+                    <h4>❌ 測試地址: ${address}</h4>
+                    <p><strong>錯誤:</strong> ${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

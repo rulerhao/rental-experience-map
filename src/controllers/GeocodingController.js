@@ -21,7 +21,7 @@ class GeocodingController {
             
             const result = await this.geocodingService.geocodeAddress(address);
             
-            if (result.status === 'ERROR') {
+            if (result.status === 'ZERO_RESULTS' || !result.results || result.results.length === 0) {
                 return res.status(422).json({
                     success: false,
                     error: '地理編碼失敗',
@@ -31,11 +31,7 @@ class GeocodingController {
             
             res.status(200).json({
                 success: true,
-                data: {
-                    lat: result.lat,
-                    lng: result.lng,
-                    formatted_address: result.formatted_address || address
-                },
+                data: result,
                 message: '地址解析成功'
             });
         } catch (error) {

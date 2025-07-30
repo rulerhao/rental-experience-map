@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>測試前端修復</title>
+</head>
+<body>
+    <h1>測試前端新增租屋經驗修復</h1>
+    <button onclick="testAddRental()">測試新增租屋經驗</button>
+    <div id="result"></div>
+
+    <script>
+        // 複製修復後的 ApiService 類別
+        class ApiService {
+            constructor() {
+                this.baseUrl = '/api';
+            }
+
+            async handleResponse(response) {
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || `HTTP ${response.status}: ${response.statusText}`);
+                }
+                return data;
+            }
+
+            async createRental(rentalData) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/rentals`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(rentalData)
+                    });
+                    const result = await this.handleResponse(response);
+                    return result;
+                } catch (error) {
+                    console.error('新增租屋資料錯誤:', error);
+                    throw error;
+                }
+            }
+
+            async geocodeAddress(address) {
+                try {
+                    const response = await fetch(`${this.baseUrl}/geocoding`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ address })
+                    });
+                    const result = await this.handleResponse(response);
+                    return result;
+                } catch (error) {
+                    console.error('地理編碼錯誤:', error);
+                    throw error;
+                }
+            }
+        }
+
+        const apiService = new ApiService();
+
+        async function testAddRental() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '測試中...';
+
+            try {
+                // 模擬用戶輸入
+                const address = '台北市信義區';
+                const description = '測試租屋經驗';
+                const rentPrice = 25000;
+                const roomType = '套房';
+                const areaSize = 15;
+                const facilities = '冷氣,洗衣機,網路';
+                const landlordRating = 4;
+                const locationRating = 5;
+                const valueRating = 3;
+
+                console.log('開始地理編碼...');
+                
+                // 地理編碼
+                const geocodeData = await apiService.geocodeAddress(address);
+                console.log('地理編碼結果:', geocodeData);
+                
+                if (geocodeData.data && geocodeData.data.status === 'OK' && geocodeData.data.results.length > 0) {
+                    const location = geocodeData.data.results[0].geometry.location;
+                    
+                    console.log('開始創建租屋...');
+                    
+                    // 新增租屋資料
+                    const rentalResult = await apiService.createRental({
+                        address: geocodeData.data.results[0].formatted_address,
+                        lat: location.lat,
+                        lng: location.lng,
+                        description: description,
+                        rent_price: rentPrice,
+                        room_type: roomType,
+                        area_size: areaSize,
+                        facilities: facilities,
+                        landlord_rating: landlordRating,
+                        location_rating: locationRating,
+                        value_rating: valueRating
+                    });
+                    
+                    console.log('創建結果:', rentalResult);
+                    
+                    if (rentalResult.success) {
+                        resultDiv.innerHTML = `
+                            <h3>✅ 測試成功！</h3>
+                            <p><strong>地址:</strong> ${geocodeData.data.results[0].formatted_address}</p>
+                            <p><strong>座標:</strong> ${location.lat}, ${location.lng}</p>
+                            <p><strong>租屋ID:</strong> ${rentalResult.data.id}</p>
+                            <p><strong>整體評分:</strong> ${rentalResult.data.overall_rating}</p>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `<h3>❌ 創建失敗</h3><p>${rentalResult.message}</p>`;
+                    }
+                } else {
+                    resultDiv.innerHTML = `<h3>❌ 地理編碼失敗</h3><p>無法找到該地址</p>`;
+                }
+            } catch (error) {
+                console.error('測試錯誤:', error);
+                resultDiv.innerHTML = `<h3>❌ 測試錯誤</h3><p>${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

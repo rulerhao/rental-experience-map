@@ -193,7 +193,7 @@ class ApiService {
             });
 
             const result = await this.handleResponse(response);
-            return result.data; // 返回座標資料，保持向後相容
+            return result; // 返回完整結果，包含success和data
         } catch (error) {
             console.error('地理編碼錯誤:', error);
             throw error;

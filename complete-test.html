@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>完整功能測試</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 30px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; }
+        .error { background-color: #f8d7da; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        input, textarea { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>租屋經驗地圖 - 完整功能測試</h1>
+
+    <!-- 地理編碼測試 -->
+    <div class="section">
+        <h2>1. 地理編碼測試</h2>
+        <p>測試不同格式的地址解析能力：</p>
+        <button onclick="testGeocoding('台北市信義區')">台北市信義區</button>
+        <button onclick="testGeocoding('台北市信義區信義路五段')">台北市信義區信義路五段</button>
+        <button onclick="testGeocoding('台北101')">台北101</button>
+        <button onclick="testGeocoding('台北市大安區忠孝東路四段')">台北市大安區忠孝東路四段</button>
+        <div id="geocoding-results"></div>
+    </div>
+
+    <!-- 新增租屋測試 -->
+    <div class="section">
+        <h2>2. 新增租屋經驗測試</h2>
+        <div class="form-group">
+            <label>地址：</label>
+            <input type="text" id="address" placeholder="例：台北市信義區" value="台北市信義區">
+        </div>
+        <div class="form-group">
+            <label>租屋經驗描述：</label>
+            <textarea id="description" placeholder="請描述你的租屋經驗">這是一個測試的租屋經驗，地點不錯，交通便利。</textarea>
+        </div>
+        <div class="form-group">
+            <label>租金（元/月）：</label>
+            <input type="number" id="rent" placeholder="例：20000" value="20000">
+        </div>
+        <div class="form-group">
+            <label>房型：</label>
+            <input type="text" id="roomType" placeholder="例：套房" value="套房">
+        </div>
+        <div class="form-group">
+            <label>坪數：</label>
+            <input type="number" id="area" placeholder="例：12" value="12" step="0.1">
+        </div>
+        <div class="form-group">
+            <label>設施：</label>
+            <input type="text" id="facilities" placeholder="例：冷氣,洗衣機,網路" value="冷氣,洗衣機,網路">
+        </div>
+        <div class="form-group">
+            <label>房東評分 (1-5)：</label>
+            <input type="number" id="landlordRating" min="1" max="5" value="4">
+        </div>
+        <div class="form-group">
+            <label>地點評分 (1-5)：</label>
+            <input type="number" id="locationRating" min="1" max="5" value="5">
+        </div>
+        <div class="form-group">
+            <label>性價比評分 (1-5)：</label>
+            <input type="number" id="valueRating" min="1" max="5" value="3">
+        </div>
+        <button onclick="testAddRental()">新增租屋經驗</button>
+        <div id="rental-results"></div>
+    </div>
+
+    <!-- 獲取租屋列表測試 -->
+    <div class="section">
+        <h2>3. 獲取租屋列表測試</h2>
+        <button onclick="testGetRentals()">獲取所有租屋資料</button>
+        <div id="list-results"></div>
+    </div>
+
+    <script>
+        class ApiService {
+            constructor() {
+                this.baseUrl = '/api';
+            }
+
+            async handleResponse(response) {
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || `HTTP ${response.status}: ${response.statusText}`);
+                }
+                return data;
+            }
+
+            async geocodeAddress(address) {
+                const response = await fetch(`${this.baseUrl}/geocoding`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address })
+                });
+                return this.handleResponse(response);
+            }
+
+            async createRental(rentalData) {
+                const response = await fetch(`${this.baseUrl}/rentals`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(rentalData)
+                });
+                return this.handleResponse(response);
+            }
+
+            async getRentals() {
+                const response = await fetch(`${this.baseUrl}/rentals`);
+                const result = await this.handleResponse(response);
+                return result.data;
+            }
+        }
+
+        const apiService = new ApiService();
+
+        async function testGeocoding(address) {
+            const resultsDiv = document.getElementById('geocoding-results');
+            
+            try {
+                const result = await apiService.geocodeAddress(address);
+                
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'result success';
+                
+                if (result.success) {
+                    const data = result.data.results[0];
+                    resultDiv.innerHTML = `
+                        <strong>✅ ${address}</strong><br>
+                        格式化地址: ${data.formatted_address}<br>
+                        座標: ${data.geometry.location.lat}, ${data.geometry.location.lng}
+                        ${data.matched_address ? `<br>匹配地址: ${data.matched_address}` : ''}
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `<strong>❌ ${address}</strong><br>錯誤: ${result.message}`;
+                }
+                
+                resultsDiv.appendChild(resultDiv);
+            } catch (error) {
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<strong>❌ ${address}</strong><br>錯誤: ${error.message}`;
+                resultsDiv.appendChild(resultDiv);
+            }
+        }
+
+        async function testAddRental() {
+            const resultsDiv = document.getElementById('rental-results');
+            resultsDiv.innerHTML = '測試中...';
+            
+            try {
+                const address = document.getElementById('address').value;
+                const description = document.getElementById('description').value;
+                const rentPrice = parseInt(document.getElementById('rent').value) || null;
+                const roomType = document.getElementById('roomType').value || null;
+                const areaSize = parseFloat(document.getElementById('area').value) || null;
+                const facilities = document.getElementById('facilities').value || null;
+                const landlordRating = parseInt(document.getElementById('landlordRating').value);
+                const locationRating = parseInt(document.getElementById('locationRating').value);
+                const valueRating = parseInt(document.getElementById('valueRating').value);
+
+                // 地理編碼
+                const geocodeData = await apiService.geocodeAddress(address);
+                
+                if (geocodeData.data && geocodeData.data.status === 'OK' && geocodeData.data.results.length > 0) {
+                    const location = geocodeData.data.results[0].geometry.location;
+                    
+                    // 新增租屋資料
+                    const rentalResult = await apiService.createRental({
+                        address: geocodeData.data.results[0].formatted_address,
+                        lat: location.lat,
+                        lng: location.lng,
+                        description: description,
+                        rent_price: rentPrice,
+                        room_type: roomType,
+                        area_size: areaSize,
+                        facilities: facilities,
+                        landlord_rating: landlordRating,
+                        location_rating: locationRating,
+                        value_rating: valueRating
+                    });
+                    
+                    if (rentalResult.success) {
+                        resultsDiv.innerHTML = `
+                            <div class="result success">
+                                <strong>✅ 租屋經驗新增成功！</strong><br>
+                                租屋ID: ${rentalResult.data.id}<br>
+                                整體評分: ${rentalResult.data.overall_rating}<br>
+                                地址: ${geocodeData.data.results[0].formatted_address}
+                            </div>
+                        `;
+                    } else {
+                        resultsDiv.innerHTML = `<div class="result error"><strong>❌ 新增失敗</strong><br>${rentalResult.message}</div>`;
+                    }
+                } else {
+                    resultsDiv.innerHTML = `<div class="result error"><strong>❌ 地理編碼失敗</strong><br>無法解析地址: ${address}</div>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="result error"><strong>❌ 測試錯誤</strong><br>${error.message}</div>`;
+            }
+        }
+
+        async function testGetRentals() {
+            const resultsDiv = document.getElementById('list-results');
+            resultsDiv.innerHTML = '載入中...';
+            
+            try {
+                const rentals = await apiService.getRentals();
+                
+                resultsDiv.innerHTML = `
+                    <div class="result success">
+                        <strong>✅ 成功獲取租屋列表</strong><br>
+                        總數: ${rentals.length} 筆資料<br>
+                        最新資料: ${rentals.length > 0 ? rentals[rentals.length - 1].address : '無'}
+                    </div>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="result error"><strong>❌ 獲取失敗</strong><br>${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

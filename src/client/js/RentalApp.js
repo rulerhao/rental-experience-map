@@ -88,8 +88,7 @@ class RentalApp {
         const comment = prompt('請輸入評論（可選）:') || '';
         
         try {
-            const result = await this.apiService.addRating({
-                rental_id: rentalId,
+            const result = await this.apiService.addRating(rentalId, {
                 user_name: userName,
                 landlord_rating: landlordRating,
                 location_rating: locationRating,
@@ -109,9 +108,92 @@ class RentalApp {
         }
     }
 
-    // 新增租屋經驗
+    // 新增租屋經驗（地圖點選版本）
+    async addNewRentalByMapSelection() {
+        // 詢問用戶是否要使用地圖選擇位置
+        const useMapSelection = confirm('請選擇位置輸入方式：\n\n確定 = 在地圖上點選位置\n取消 = 手動輸入地址');
+        
+        if (useMapSelection) {
+            await this.addNewRentalWithMapSelection();
+        } else {
+            await this.addNewRental();
+        }
+    }
+
+    // 使用地圖選擇位置的新增租屋經驗
+    async addNewRentalWithMapSelection() {
+        alert('請在地圖上點擊選擇租屋位置');
+        
+        // 開始位置選擇模式
+        this.mapManager.startLocationSelection(async (selectedLocation) => {
+            try {
+                // 獲取地址（反向地理編碼）
+                const address = await this.mapManager.reverseGeocode(selectedLocation.lat, selectedLocation.lng);
+                
+                // 收集其他資訊
+                const description = prompt('請描述你的租屋經驗:');
+                if (!description) return;
+                
+                const rentPrice = parseInt(prompt('請輸入租金（元/月）:')) || null;
+                const roomType = prompt('請輸入房型（如：套房、雅房、分租套房）:') || null;
+                const areaSize = parseFloat(prompt('請輸入坪數:')) || null;
+                const facilities = prompt('請輸入設施（用逗號分隔，如：冷氣,洗衣機,網路）:') || null;
+                
+                const landlordRating = parseInt(prompt('房東評分 (1-5):'));
+                if (!landlordRating || landlordRating < 1 || landlordRating > 5) {
+                    alert('請輸入有效的房東評分 (1-5)');
+                    return;
+                }
+                
+                const locationRating = parseInt(prompt('地點評分 (1-5):'));
+                if (!locationRating || locationRating < 1 || locationRating > 5) {
+                    alert('請輸入有效的地點評分 (1-5)');
+                    return;
+                }
+                
+                const valueRating = parseInt(prompt('性價比評分 (1-5):'));
+                if (!valueRating || valueRating < 1 || valueRating > 5) {
+                    alert('請輸入有效的性價比評分 (1-5)');
+                    return;
+                }
+                
+                // 直接使用選擇的座標創建租屋資料
+                const rentalResult = await this.apiService.createRental({
+                    address: address,
+                    lat: selectedLocation.lat,
+                    lng: selectedLocation.lng,
+                    description: description,
+                    rent_price: rentPrice,
+                    room_type: roomType,
+                    area_size: areaSize,
+                    facilities: facilities,
+                    landlord_rating: landlordRating,
+                    location_rating: locationRating,
+                    value_rating: valueRating
+                });
+                
+                if (rentalResult.success) {
+                    // 重新載入資料
+                    await this.loadRentalData();
+                    
+                    // 聚焦到新添加的位置
+                    this.mapManager.focusOnLocation(selectedLocation.lat, selectedLocation.lng);
+                    
+                    alert('租屋經驗已成功添加！');
+                } else {
+                    alert('租屋資料添加失敗，請稍後再試。');
+                }
+                
+            } catch (error) {
+                console.error('新增租屋經驗錯誤:', error);
+                alert('新增失敗：' + (error.message || '請稍後再試。'));
+            }
+        });
+    }
+
+    // 新增租屋經驗（原始地址輸入版本）
     async addNewRental() {
-        const address = prompt('請輸入地址:');
+        const address = prompt('請輸入地址（建議格式：台北市○○區○○路 或 台北市○○區）:');
         if (!address) return;
         
         const description = prompt('請描述你的租屋經驗:');
@@ -144,12 +226,12 @@ class RentalApp {
             // 地理編碼
             const geocodeData = await this.apiService.geocodeAddress(address);
             
-            if (geocodeData.status === 'OK' && geocodeData.results.length > 0) {
-                const location = geocodeData.results[0].geometry.location;
+            if (geocodeData.data && geocodeData.data.status === 'OK' && geocodeData.data.results.length > 0) {
+                const location = geocodeData.data.results[0].geometry.location;
                 
                 // 新增租屋資料
                 const rentalResult = await this.apiService.createRental({
-                    address: geocodeData.results[0].formatted_address,
+                    address: geocodeData.data.results[0].formatted_address,
                     lat: location.lat,
                     lng: location.lng,
                     description: description,
@@ -174,10 +256,11 @@ class RentalApp {
                     alert('租屋資料添加失敗，請稍後再試。');
                 }
             } else {
-                alert('無法找到該地址，請檢查地址是否正確。');
+                alert('無法找到該地址。\n\n建議嘗試：\n• 台北市信義區（區級地址）\n• 台北市信義區信義路（路級地址）\n• 台北101（知名地標）');
             }
         } catch (error) {
-            alert('新增失敗，請稍後再試。');
+            console.error('新增租屋經驗錯誤:', error);
+            alert('新增失敗：' + (error.message || '請稍後再試。'));
         }
     }
 }

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>測試地圖點擊功能</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #map { height: 400px; width: 100%; border: 1px solid #ddd; }
+        .controls { margin: 20px 0; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        .info { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>地圖點擊功能測試</h1>
+    
+    <div class="controls">
+        <button onclick="startLocationSelection()">開始選擇位置</button>
+        <button onclick="endLocationSelection()">結束選擇</button>
+        <button onclick="testReverseGeocode()">測試反向地理編碼</button>
+    </div>
+    
+    <div id="map"></div>
+    
+    <div class="info" id="info">
+        點擊「開始選擇位置」然後在地圖上點擊來測試功能
+    </div>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script src="src/client/js/MapManager.js"></script>
+    
+    <script>
+        let mapManager;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            mapManager = new MapManager();
+            mapManager.initMap();
+            window.mapManager = mapManager; // 供彈出窗口使用
+            
+            document.getElementById('info').innerHTML = '地圖已初始化，可以開始測試';
+        });
+        
+        function startLocationSelection() {
+            mapManager.startLocationSelection((location) => {
+                document.getElementById('info').innerHTML = `
+                    <strong>選擇的位置：</strong><br>
+                    緯度: ${location.lat}<br>
+                    經度: ${location.lng}
+                `;
+                
+                // 測試反向地理編碼
+                mapManager.reverseGeocode(location.lat, location.lng).then(address => {
+                    document.getElementById('info').innerHTML += `<br><strong>地址：</strong> ${address}`;
+                });
+            });
+        }
+        
+        function endLocationSelection() {
+            mapManager.endLocationSelection();
+            document.getElementById('info').innerHTML = '位置選擇已結束';
+        }
+        
+        async function testReverseGeocode() {
+            // 測試台北101的座標
+            const lat = 25.0338;
+            const lng = 121.5645;
+            
+            try {
+                const address = await mapManager.reverseGeocode(lat, lng);
+                document.getElementById('info').innerHTML = `
+                    <strong>反向地理編碼測試：</strong><br>
+                    座標: ${lat}, ${lng}<br>
+                    地址: ${address}
+                `;
+            } catch (error) {
+                document.getElementById('info').innerHTML = `反向地理編碼錯誤: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

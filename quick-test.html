@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>快速測試</title>
+</head>
+<body>
+    <h1>租屋經驗新增測試</h1>
+    <button onclick="testAddRental()">測試新增租屋</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAddRental() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '測試中...';
+            
+            try {
+                // 1. 地理編碼
+                console.log('開始地理編碼...');
+                const geocodeResponse = await fetch('/api/geocoding', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address: '台北市大安區' })
+                });
+                
+                const geocodeData = await geocodeResponse.json();
+                console.log('地理編碼結果:', geocodeData);
+                
+                if (!geocodeData.success) {
+                    resultDiv.innerHTML = '❌ 地理編碼失敗: ' + geocodeData.message;
+                    return;
+                }
+                
+                // 2. 創建租屋
+                console.log('開始創建租屋...');
+                const location = geocodeData.data.results[0].geometry.location;
+                const rentalData = {
+                    address: geocodeData.data.results[0].formatted_address,
+                    lat: location.lat,
+                    lng: location.lng,
+                    description: '測試租屋經驗',
+                    rent_price: 15000,
+                    room_type: '套房',
+                    area_size: 10,
+                    facilities: '冷氣,網路',
+                    landlord_rating: 4,
+                    location_rating: 5,
+                    value_rating: 3
+                };
+                
+                const rentalResponse = await fetch('/api/rentals', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(rentalData)
+                });
+                
+                const rentalResult = await rentalResponse.json();
+                console.log('創建租屋結果:', rentalResult);
+                
+                if (rentalResult.success) {
+                    resultDiv.innerHTML = `
+                        ✅ 測試成功！<br>
+                        地址: ${rentalData.address}<br>
+                        座標: ${location.lat}, ${location.lng}<br>
+                        租屋 ID: ${rentalResult.data.id}<br>
+                        整體評分: ${rentalResult.data.overall_rating}
+                    `;
+                } else {
+                    resultDiv.innerHTML = '❌ 創建租屋失敗: ' + rentalResult.message;
+                }
+                
+            } catch (error) {
+                console.error('測試錯誤:', error);
+                resultDiv.innerHTML = '❌ 測試錯誤: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

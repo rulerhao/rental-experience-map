@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>租屋經驗分享地圖</title>
+    <title>測試地圖點選功能</title>
     <style>
         body {
             font-family: 'Microsoft JhengHei', Arial, sans-serif;
@@ -144,17 +144,26 @@
         }
 
         .info-box {
-            background: #e8f5e8;
-            border: 1px solid #4CAF50;
+            background: #e3f2fd;
+            border: 1px solid #2196F3;
             border-radius: 6px;
-            padding: 12px;
-            margin-bottom: 15px;
-            font-size: 12px;
-            color: #2e7d32;
+            padding: 15px;
+            margin-bottom: 20px;
         }
 
-        .info-box strong {
-            color: #1b5e20;
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            color: #1976D2;
+        }
+
+        .info-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .info-box li {
+            margin-bottom: 5px;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -162,8 +171,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>租屋經驗分享地圖</h1>
-            <p>分享你的租屋經驗，幫助其他人找到好房子</p>
+            <h1>租屋經驗分享地圖 - 地圖點選版本</h1>
+            <p>點擊地圖選擇位置，更精確地標記你的租屋經驗</p>
         </div>
 
         <div class="content">
@@ -171,8 +180,24 @@
                 <button class="add-btn" onclick="addNewRental()">📍 新增租屋經驗</button>
                 
                 <div class="info-box">
-                    <strong>🆕 新功能！</strong><br>
-                    現在可以直接在地圖上點選位置，更精確地標記你的租屋經驗！
+                    <h3>🗺️ 使用說明</h3>
+                    <ul>
+                        <li>點擊「新增租屋經驗」按鈕</li>
+                        <li>選擇「在地圖上點選位置」</li>
+                        <li>在地圖上點擊你的租屋位置</li>
+                        <li>確認位置後填寫租屋資訊</li>
+                        <li>系統會自動獲取地址資訊</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>✨ 新功能優勢</h3>
+                    <ul>
+                        <li>精確定位，不受地址解析限制</li>
+                        <li>視覺化選擇，更直觀方便</li>
+                        <li>自動反向地理編碼獲取地址</li>
+                        <li>支援任意位置標記</li>
+                    </ul>
                 </div>
                 
                 <div id="rental-list">

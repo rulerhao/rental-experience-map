@@ -1,0 +1,19 @@
+{
+  "name": "rental-experience-map-tests",
+  "version": "1.0.0",
+  "description": "API 自動化測試套件",
+  "scripts": {
+    "test": "node test-api.js",
+    "test:watch": "nodemon test-api.js",
+    "test:jest": "jest",
+    "test:postman": "newman run postman-collection.json -e postman-environment.json"
+  },
+  "devDependencies": {
+    "axios": "^1.6.0",
+    "colors": "^1.4.0",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "nodemon": "^3.0.1",
+    "newman": "^6.0.0"
+  }
+}

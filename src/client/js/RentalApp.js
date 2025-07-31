@@ -3,6 +3,7 @@ class RentalApp {
         this.mapManager = new MapManager();
         this.listManager = new RentalListManager();
         this.apiService = new ApiService();
+        this.formManager = null; // 延遲初始化
         this.rentalData = [];
     }
 
@@ -10,6 +11,15 @@ class RentalApp {
     async init() {
         try {
             this.mapManager.initMap();
+            
+            // 初始化表單管理器
+            this.formManager = new RentalFormManager(this.apiService, this.mapManager);
+            this.formManager.setOnSuccess(async (locationData) => {
+                // 重新載入資料並聚焦到新位置
+                await this.loadRentalData();
+                this.mapManager.focusOnLocation(locationData.lat, locationData.lng);
+            });
+            
             await this.loadRentalData();
         } catch (error) {
             console.error('應用程式初始化失敗:', error);
@@ -108,15 +118,10 @@ class RentalApp {
         }
     }
 
-    // 新增租屋經驗（地圖點選版本）
+    // 新增租屋經驗（使用新的表單UI）
     async addNewRentalByMapSelection() {
-        // 詢問用戶是否要使用地圖選擇位置
-        const useMapSelection = confirm('請選擇位置輸入方式：\n\n確定 = 在地圖上點選位置\n取消 = 手動輸入地址');
-        
-        if (useMapSelection) {
-            await this.addNewRentalWithMapSelection();
-        } else {
-            await this.addNewRental();
+        if (this.formManager) {
+            this.formManager.show();
         }
     }
 

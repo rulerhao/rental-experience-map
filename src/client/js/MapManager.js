@@ -144,6 +144,19 @@ class MapManager {
         this.hideLocationSelectionHint();
     }
 
+    // 停止位置選擇（外部調用）
+    stopLocationSelection() {
+        this.endLocationSelection();
+        
+        // 清除臨時標記
+        if (this.tempMarker) {
+            this.map.removeLayer(this.tempMarker);
+            this.tempMarker = null;
+        }
+        
+        this.selectedLocation = null;
+    }
+
     // 處理位置選擇
     handleLocationSelection(latlng) {
         // 清除之前的臨時標記

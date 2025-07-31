@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>租屋經驗分享地圖</title>
+    <title>新增租屋經驗UI測試</title>
     <style>
         body {
             font-family: 'Microsoft JhengHei', Arial, sans-serif;
@@ -56,77 +56,6 @@
             height: 100%;
         }
 
-        .rental-item {
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .rental-item:hover {
-            background: #e3f2fd;
-            border-color: #2196F3;
-        }
-
-        .rental-item.active {
-            background: #e3f2fd;
-            border-color: #2196F3;
-        }
-
-        .rental-address {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .rental-description {
-            color: #666;
-            font-size: 14px;
-            line-height: 1.4;
-            margin-bottom: 8px;
-        }
-
-        .rental-rating {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 5px;
-        }
-
-        .stars {
-            color: #ffc107;
-            font-size: 16px;
-        }
-
-        .rating-text {
-            font-size: 12px;
-            color: #666;
-        }
-
-        .rental-details {
-            font-size: 12px;
-            color: #888;
-            margin-top: 8px;
-        }
-
-        .add-rating-btn {
-            background: #ff9800;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            margin-top: 8px;
-        }
-
-        .add-rating-btn:hover {
-            background: #f57c00;
-        }
-
         .add-btn {
             background: #4CAF50;
             color: white;
@@ -162,24 +91,26 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>租屋經驗分享地圖</h1>
-            <p>分享你的租屋經驗，幫助其他人找到好房子</p>
+            <h1>租屋經驗分享地圖 - 新UI測試</h1>
+            <p>測試新的租屋經驗新增表單界面</p>
         </div>
 
         <div class="content">
             <div class="sidebar">
-                <button class="add-btn" onclick="addNewRental()">📍 新增租屋經驗</button>
+                <button class="add-btn" onclick="showRentalForm()">📍 新增租屋經驗（新UI）</button>
                 
                 <div class="info-box">
-                    <strong>🆕 全新界面！</strong><br>
-                    • 現代化表單設計<br>
+                    <strong>🆕 新功能測試！</strong><br>
+                    點擊上方按鈕測試新的表單界面，包含：<br>
+                    • 現代化的表單設計<br>
                     • 地圖選點功能<br>
                     • 星級評分系統<br>
-                    • 設施標籤選擇
+                    • 設施標籤選擇<br>
+                    • 表單驗證功能
                 </div>
                 
                 <div id="rental-list">
-                    <!-- 租屋資料列表將在這裡顯示 -->
+                    <p>這是測試頁面，主要用於展示新的UI設計。</p>
                 </div>
             </div>
 
@@ -200,10 +131,40 @@
     <!-- 模組化 JavaScript 檔案 -->
     <script src="src/client/js/ApiService.js"></script>
     <script src="src/client/js/MapManager.js"></script>
-    <script src="src/client/js/RentalListManager.js"></script>
     <script src="src/client/js/RentalFormManager.js"></script>
-    <script src="src/client/js/RentalApp.js"></script>
-    <script src="script.js"></script>
+    
+    <script>
+        let mapManager;
+        let apiService;
+        let formManager;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化地圖
+            mapManager = new MapManager();
+            mapManager.initMap();
+            
+            // 初始化API服務
+            apiService = new ApiService();
+            
+            // 初始化表單管理器
+            formManager = new RentalFormManager(apiService, mapManager);
+            formManager.setOnSuccess((locationData) => {
+                alert(`成功新增租屋經驗！\n位置：${locationData.address}`);
+                mapManager.focusOnLocation(locationData.lat, locationData.lng);
+            });
+            
+            // 設置全域變數供按鈕使用
+            window.mapManager = mapManager;
+        });
+
+        // 顯示租屋表單
+        function showRentalForm() {
+            if (formManager) {
+                formManager.show();
+            }
+        }
+    </script>
 </body>
 
 </html>

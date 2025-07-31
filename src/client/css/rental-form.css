@@ -1,0 +1,418 @@
+/* 租屋經驗表單樣式 */
+.rental-form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.rental-form-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.rental-form-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+}
+
+.rental-form-overlay.active .rental-form-container {
+    transform: translateY(0);
+}
+
+.rental-form-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 12px 12px 0 0;
+    position: relative;
+}
+
+.rental-form-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.rental-form-header p {
+    margin: 8px 0 0 0;
+    opacity: 0.9;
+    font-size: 14px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.rental-form-body {
+    padding: 30px;
+}
+
+.form-section {
+    margin-bottom: 30px;
+}
+
+.form-section:last-child {
+    margin-bottom: 0;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-icon {
+    font-size: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+    font-size: 14px;
+}
+
+.form-group .required {
+    color: #e74c3c;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-control.error {
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-col {
+    flex: 1;
+}
+
+.rating-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.rating-item {
+    flex: 1;
+    min-width: 150px;
+}
+
+.star-rating {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.star {
+    font-size: 24px;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    user-select: none;
+}
+
+.star:hover,
+.star.active {
+    color: #ffc107;
+}
+
+.star:hover ~ .star {
+    color: #ddd;
+}
+
+.rating-text {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+    text-align: center;
+}
+
+.location-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    border: 2px dashed #dee2e6;
+}
+
+.location-methods {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.location-method {
+    flex: 1;
+    padding: 15px;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.location-method:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.location-method.active {
+    border-color: #667eea;
+    background: #667eea;
+    color: white;
+}
+
+.location-method .icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.location-method .title {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.location-method .desc {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.selected-location {
+    background: #e8f5e8;
+    border: 1px solid #4caf50;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.selected-location .location-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.selected-location .icon {
+    color: #4caf50;
+    font-size: 20px;
+}
+
+.selected-location .address {
+    font-weight: 500;
+    color: #2e7d32;
+}
+
+.selected-location .coords {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    padding-top: 20px;
+    border-top: 1px solid #e1e8ed;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.loading-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 12px;
+    margin-top: 4px;
+    display: none;
+}
+
+.form-group.error .error-message {
+    display: block;
+}
+
+.help-text {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.facility-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.facility-tag {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.facility-tag:hover {
+    background: #bbdefb;
+}
+
+.facility-tag.selected {
+    background: #1976d2;
+    color: white;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .rental-form-container {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .rental-form-body {
+        padding: 20px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .rating-group {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .location-methods {
+        flex-direction: column;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        justify-content: center;
+    }
+}

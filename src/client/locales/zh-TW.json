@@ -27,6 +27,8 @@
     },
     "basicInfo": {
       "title": "基本資訊",
+      "address": "地址",
+      "addressPlaceholder": "請輸入詳細地址描述，如：XX社區XX棟XX號",
       "description": "租屋經驗描述",
       "descriptionPlaceholder": "請詳細描述你的租屋經驗，包括房屋狀況、周邊環境、房東互動等...",
       "descriptionRequired": "請輸入租屋經驗描述",

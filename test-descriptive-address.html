@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>測試地址欄位</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="src/client/css/rental-form.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        #map {
+            height: 400px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .info-box {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🏠 測試地址欄位功能</h1>
+        <p>這個頁面用來測試新增的「地址」欄位功能。</p>
+        
+        <div class="info-box">
+            <h3>測試說明：</h3>
+            <ul>
+                <li>點擊「開啟租屋表單」按鈕</li>
+                <li>在地圖上選擇一個位置</li>
+                <li>在基本資訊區塊中，你會看到新的「地址」欄位</li>
+                <li>這個欄位可以讓你輸入詳細的地址描述</li>
+                <li>填寫完整表單並提交測試</li>
+            </ul>
+        </div>
+
+        <button class="test-button" onclick="openRentalForm()">開啟租屋表單</button>
+        <button class="test-button" onclick="loadRentals()">載入現有資料</button>
+        
+        <div id="map"></div>
+        
+        <div id="rentalsList"></div>
+    </div>
+
+    <!-- 載入必要的腳本 -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="src/client/js/I18nService.js"></script>
+    <script src="src/client/js/ApiService.js"></script>
+    <script src="src/client/js/MapManager.js"></script>
+    <script src="src/client/js/RentalFormManager.js"></script>
+
+    <script>
+        // 初始化服務
+        const i18n = new I18nService();
+        const apiService = new ApiService();
+        let mapManager;
+        let rentalFormManager;
+
+        // 初始化地圖
+        function initMap() {
+            const map = L.map('map').setView([25.0330, 121.5654], 13);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            mapManager = new MapManager(map, apiService);
+            rentalFormManager = new RentalFormManager(apiService, mapManager, i18n);
+            
+            // 設置成功回調
+            rentalFormManager.setOnSuccess((location) => {
+                console.log('租屋經驗新增成功！', location);
+                loadRentals(); // 重新載入資料
+            });
+        }
+
+        // 開啟租屋表單
+        function openRentalForm() {
+            rentalFormManager.show();
+        }
+
+        // 載入租屋資料
+        async function loadRentals() {
+            try {
+                const response = await fetch('/api/rentals');
+                const rentals = await response.json();
+                
+                const listDiv = document.getElementById('rentalsList');
+                listDiv.innerHTML = '<h3>現有租屋資料：</h3>';
+                
+                if (rentals.length === 0) {
+                    listDiv.innerHTML += '<p>目前沒有資料</p>';
+                    return;
+                }
+                
+                rentals.forEach(rental => {
+                    const rentalDiv = document.createElement('div');
+                    rentalDiv.className = 'info-box';
+                    rentalDiv.innerHTML = `
+                        <h4>ID: ${rental.id}</h4>
+                        <p><strong>地圖地址：</strong> ${rental.address}</p>
+                        ${rental.descriptive_address ? `<p><strong>詳細地址：</strong> ${rental.descriptive_address}</p>` : ''}
+                        <p><strong>描述：</strong> ${rental.description}</p>
+                        <p><strong>座標：</strong> ${rental.lat}, ${rental.lng}</p>
+                        <p><strong>建立時間：</strong> ${rental.created_at}</p>
+                    `;
+                    listDiv.appendChild(rentalDiv);
+                });
+                
+            } catch (error) {
+                console.error('載入資料失敗:', error);
+                document.getElementById('rentalsList').innerHTML = '<p style="color: red;">載入資料失敗</p>';
+            }
+        }
+
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', async () => {
+            await i18n.init();
+            initMap();
+            loadRentals();
+        });
+    </script>
+</body>
+</html>

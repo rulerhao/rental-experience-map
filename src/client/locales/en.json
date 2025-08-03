@@ -27,6 +27,8 @@
     },
     "basicInfo": {
       "title": "Basic Information",
+      "address": "Address",
+      "addressPlaceholder": "Please enter detailed address description, e.g.: XX Community Building XX Unit XX",
       "description": "Rental Experience Description",
       "descriptionPlaceholder": "Please describe your rental experience in detail, including property condition, surrounding environment, landlord interaction, etc...",
       "descriptionRequired": "Please enter rental experience description",

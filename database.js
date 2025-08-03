@@ -14,6 +14,7 @@ function initializeDatabase() {
                 CREATE TABLE IF NOT EXISTS rentals (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     address TEXT NOT NULL,
+                    descriptive_address TEXT,
                     lat REAL NOT NULL,
                     lng REAL NOT NULL,
                     description TEXT,
@@ -87,13 +88,13 @@ function initializeDatabase() {
                 
                 if (row.count === 0) {
                     const stmt = db.prepare(`
-                        INSERT INTO rentals (address, lat, lng, description, rent_price, room_type, area_size, facilities, landlord_rating, location_rating, value_rating, overall_rating)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        INSERT INTO rentals (address, descriptive_address, lat, lng, description, rent_price, room_type, area_size, facilities, landlord_rating, location_rating, value_rating, overall_rating)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     `);
                     
                     sampleData.forEach(data => {
                         stmt.run([
-                            data.address, data.lat, data.lng, data.description,
+                            data.address, data.descriptive_address || null, data.lat, data.lng, data.description,
                             data.rent_price, data.room_type, data.area_size, data.facilities,
                             data.landlord_rating, data.location_rating, data.value_rating, data.overall_rating
                         ]);
@@ -124,14 +125,14 @@ const dbOperations = {
     addRental: (rentalData) => {
         return new Promise((resolve, reject) => {
             const stmt = db.prepare(`
-                INSERT INTO rentals (address, lat, lng, description, rent_price, room_type, area_size, facilities, landlord_rating, location_rating, value_rating, overall_rating)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO rentals (address, descriptive_address, lat, lng, description, rent_price, room_type, area_size, facilities, landlord_rating, location_rating, value_rating, overall_rating)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `);
             
             const overall = (rentalData.landlord_rating + rentalData.location_rating + rentalData.value_rating) / 3;
             
             stmt.run([
-                rentalData.address, rentalData.lat, rentalData.lng, rentalData.description,
+                rentalData.address, rentalData.descriptive_address || null, rentalData.lat, rentalData.lng, rentalData.description,
                 rentalData.rent_price, rentalData.room_type, rentalData.area_size, rentalData.facilities,
                 rentalData.landlord_rating, rentalData.location_rating, rentalData.value_rating, overall
             ], function(err) {

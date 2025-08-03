@@ -13,6 +13,7 @@ class Rental {
                     CREATE TABLE IF NOT EXISTS rentals (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         address TEXT NOT NULL,
+                        descriptive_address TEXT,
                         lat REAL NOT NULL,
                         lng REAL NOT NULL,
                         description TEXT,
@@ -69,8 +70,8 @@ class Rental {
     async create(rentalData) {
         return new Promise((resolve, reject) => {
             const stmt = this.db.prepare(`
-                INSERT INTO rentals (address, lat, lng, description, rent_price, room_type, area_size, facilities, landlord_rating, location_rating, value_rating, overall_rating)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO rentals (address, descriptive_address, lat, lng, description, rent_price, room_type, area_size, facilities, landlord_rating, location_rating, value_rating, overall_rating)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `);
             
             // 如果有評分資料，計算平均分；否則設為null
@@ -80,7 +81,7 @@ class Rental {
             }
             
             stmt.run([
-                rentalData.address, rentalData.lat, rentalData.lng, rentalData.description,
+                rentalData.address, rentalData.descriptive_address || null, rentalData.lat, rentalData.lng, rentalData.description,
                 rentalData.rent_price, rentalData.room_type, rentalData.area_size, rentalData.facilities,
                 rentalData.landlord_rating || null, rentalData.location_rating || null, 
                 rentalData.value_rating || null, overall
@@ -103,6 +104,11 @@ class Rental {
             if (rentalData.address !== undefined) {
                 updateFields.push('address = ?');
                 values.push(rentalData.address);
+            }
+            
+            if (rentalData.descriptive_address !== undefined) {
+                updateFields.push('descriptive_address = ?');
+                values.push(rentalData.descriptive_address);
             }
             
             if (rentalData.lat !== undefined) {

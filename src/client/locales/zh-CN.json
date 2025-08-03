@@ -27,6 +27,8 @@
     },
     "basicInfo": {
       "title": "基本信息",
+      "address": "地址",
+      "addressPlaceholder": "请输入详细地址描述，如：XX小区XX栋XX号",
       "description": "租房经验描述",
       "descriptionPlaceholder": "请详细描述你的租房经验，包括房屋状况、周边环境、房东互动等...",
       "descriptionRequired": "请输入租房经验描述",

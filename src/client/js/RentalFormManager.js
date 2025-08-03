@@ -86,6 +86,15 @@ class RentalFormManager {
                                 </div>
                                 
                                 <div class="form-group">
+                                    <label for="descriptiveAddress">
+                                        <span data-i18n="form.basicInfo.address">${t('form.basicInfo.address')}</span>
+                                    </label>
+                                    <input type="text" id="descriptiveAddress" class="form-control" 
+                                           data-i18n-placeholder="form.basicInfo.addressPlaceholder"
+                                           placeholder="${t('form.basicInfo.addressPlaceholder')}">
+                                </div>
+                                
+                                <div class="form-group">
                                     <label for="description">
                                         <span data-i18n="form.basicInfo.description">${t('form.basicInfo.description')}</span> 
                                         <span class="required">*</span>
@@ -490,6 +499,7 @@ class RentalFormManager {
             // 收集表單資料
             const formData = {
                 address: this.currentLocation.address,
+                descriptive_address: document.getElementById('descriptiveAddress').value.trim() || null,
                 lat: this.currentLocation.lat,
                 lng: this.currentLocation.lng,
                 description: document.getElementById('description').value.trim(),
@@ -630,6 +640,12 @@ class RentalFormManager {
         const t = (key, params) => this.i18n ? this.i18n.t(key, params) : key;
         document.querySelectorAll('.rating-text').forEach(text => text.textContent = t('form.rating.selectRating'));
         document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
+
+        // 清空地址欄位
+        const descriptiveAddressField = document.getElementById('descriptiveAddress');
+        if (descriptiveAddressField) {
+            descriptiveAddressField.value = '';
+        }
 
         // 重置位置選擇
         document.querySelectorAll('.location-method').forEach(m => m.classList.remove('active'));

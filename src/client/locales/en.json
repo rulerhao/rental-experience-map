@@ -1,0 +1,149 @@
+{
+  "app": {
+    "title": "Rental Experience Sharing Map",
+    "subtitle": "Share your rental experience to help others find good housing"
+  },
+  "navigation": {
+    "language": "Language",
+    "about": "About",
+    "help": "Help"
+  },
+  "form": {
+    "title": "Add Rental Experience",
+    "subtitle": "Share your rental experience to help others find good housing",
+    "close": "Close",
+    "cancel": "Cancel",
+    "submit": "Add Rental Experience",
+    "submitting": "Adding...",
+    "required": "Required",
+    "location": {
+      "title": "Location Information",
+      "mapSelection": "Map Selection",
+      "mapSelectionDesc": "Click on the map to select location",
+      "selectPrompt": "Please select rental location",
+      "selectPromptDesc": "Click the button above to start selecting on the map",
+      "selected": "Location Selected",
+      "clickToSelect": "Please click on the map to select rental location"
+    },
+    "basicInfo": {
+      "title": "Basic Information",
+      "description": "Rental Experience Description",
+      "descriptionPlaceholder": "Please describe your rental experience in detail, including property condition, surrounding environment, landlord interaction, etc...",
+      "descriptionRequired": "Please enter rental experience description",
+      "rentPrice": "Rent ($/month)",
+      "rentPricePlaceholder": "25000",
+      "roomType": "Room Type",
+      "roomTypeSelect": "Please select",
+      "areaSize": "Area Size (ping)",
+      "areaSizePlaceholder": "15.5",
+      "facilities": "Property Facilities",
+      "facilitiesPlaceholder": "Select tags below or enter manually, separated by commas"
+    },
+    "roomTypes": {
+      "studio": "Studio",
+      "shared": "Shared Room",
+      "sharedStudio": "Shared Studio",
+      "wholeFloor": "Whole Floor",
+      "independent": "Independent Studio",
+      "other": "Other"
+    },
+    "facilities": {
+      "aircon": "Air Conditioning",
+      "washingMachine": "Washing Machine",
+      "internet": "Internet",
+      "tv": "TV",
+      "fridge": "Refrigerator",
+      "waterHeater": "Water Heater",
+      "parking": "Parking",
+      "elevator": "Elevator",
+      "balcony": "Balcony",
+      "kitchen": "Kitchen"
+    },
+    "rating": {
+      "title": "Rating",
+      "landlord": "Landlord Rating",
+      "location": "Location Rating",
+      "value": "Value Rating",
+      "selectRating": "Please select rating",
+      "ratingText": {
+        "1": "Very Poor",
+        "2": "Poor",
+        "3": "Average",
+        "4": "Good",
+        "5": "Excellent"
+      }
+    },
+    "validation": {
+      "selectLocation": "Please select location or enter address",
+      "enterDescription": "Please enter rental experience description",
+      "completeRatings": "Please complete all rating items",
+      "selectLocationFirst": "Please select location on the map first"
+    }
+  },
+  "map": {
+    "selectLocationHint": "Please click on the map to select rental location",
+    "selectedLocation": "Selected Location",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "coordinates": "Coordinates"
+  },
+  "rental": {
+    "addNew": "Add Rental Experience",
+    "addRating": "Add Rating",
+    "priceNotProvided": "Price not provided",
+    "roomTypeNotProvided": "Room type not provided",
+    "coordinateLocation": "Coordinate Location"
+  },
+  "sidebar": {
+    "newFeatures": "New Interface!",
+    "features": {
+      "modernForm": "Modern form design",
+      "mapSelection": "Map selection feature",
+      "starRating": "Star rating system",
+      "facilityTags": "Facility tag selection"
+    }
+  },
+  "messages": {
+    "success": {
+      "rentalAdded": "Rental experience added successfully!",
+      "ratingAdded": "Rating added successfully!"
+    },
+    "error": {
+      "loadFailed": "Failed to load data, please try again later.",
+      "addFailed": "Failed to add, please try again later.",
+      "appInitFailed": "Application failed to load, please refresh the page.",
+      "addressNotFound": "Unable to find the address.",
+      "geocodingFailed": "Failed to get address",
+      "invalidRating": "Please enter a valid rating (1-5)"
+    },
+    "prompts": {
+      "enterName": "Please enter your name (optional):",
+      "anonymousUser": "Anonymous User",
+      "landlordRating": "Landlord rating (1-5):",
+      "locationRating": "Location rating (1-5):",
+      "valueRating": "Value rating (1-5):",
+      "enterComment": "Please enter comment (optional):"
+    },
+    "suggestions": {
+      "addressFormat": "Try:",
+      "districtLevel": "Taipei Xinyi District (district level)",
+      "streetLevel": "Taipei Xinyi Road (street level)",
+      "landmark": "Taipei 101 (landmark)"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "refresh": "Refresh"
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "app": {
+    "title": "租房经验分享地图",
+    "subtitle": "分享你的租房经验，帮助其他人找到好房子"
+  },
+  "navigation": {
+    "language": "语言",
+    "about": "关于",
+    "help": "帮助"
+  },
+  "form": {
+    "title": "新增租房经验",
+    "subtitle": "分享你的租房经验，帮助其他人找到好房子",
+    "close": "关闭",
+    "cancel": "取消",
+    "submit": "新增租房经验",
+    "submitting": "新增中...",
+    "required": "必填",
+    "location": {
+      "title": "位置信息",
+      "mapSelection": "地图选点",
+      "mapSelectionDesc": "在地图上点选位置",
+      "selectPrompt": "请选择租房位置",
+      "selectPromptDesc": "点击上方按钮开始在地图上选点",
+      "selected": "已选择位置",
+      "clickToSelect": "请在地图上点击选择租房位置"
+    },
+    "basicInfo": {
+      "title": "基本信息",
+      "description": "租房经验描述",
+      "descriptionPlaceholder": "请详细描述你的租房经验，包括房屋状况、周边环境、房东互动等...",
+      "descriptionRequired": "请输入租房经验描述",
+      "rentPrice": "租金（元/月）",
+      "rentPricePlaceholder": "25000",
+      "roomType": "房型",
+      "roomTypeSelect": "请选择",
+      "areaSize": "面积（平米）",
+      "areaSizePlaceholder": "50",
+      "facilities": "房屋设施",
+      "facilitiesPlaceholder": "点选下方标签或手动输入，用逗号分隔"
+    },
+    "roomTypes": {
+      "studio": "单间",
+      "shared": "合租房",
+      "sharedStudio": "分租单间",
+      "wholeFloor": "整层住宅",
+      "independent": "独立单间",
+      "other": "其他"
+    },
+    "facilities": {
+      "aircon": "空调",
+      "washingMachine": "洗衣机",
+      "internet": "网络",
+      "tv": "电视",
+      "fridge": "冰箱",
+      "waterHeater": "热水器",
+      "parking": "停车位",
+      "elevator": "电梯",
+      "balcony": "阳台",
+      "kitchen": "厨房"
+    },
+    "rating": {
+      "title": "评分",
+      "landlord": "房东评分",
+      "location": "地点评分",
+      "value": "性价比评分",
+      "selectRating": "请选择评分",
+      "ratingText": {
+        "1": "很差",
+        "2": "不好",
+        "3": "一般",
+        "4": "不错",
+        "5": "很好"
+      }
+    },
+    "validation": {
+      "selectLocation": "请选择位置或输入地址",
+      "enterDescription": "请输入租房经验描述",
+      "completeRatings": "请完成所有评分项目",
+      "selectLocationFirst": "请先在地图上选择位置"
+    }
+  },
+  "map": {
+    "selectLocationHint": "请在地图上点击选择租房位置",
+    "selectedLocation": "选择的位置",
+    "confirm": "确认",
+    "cancel": "取消",
+    "latitude": "纬度",
+    "longitude": "经度",
+    "coordinates": "经纬度"
+  },
+  "rental": {
+    "addNew": "新增租房经验",
+    "addRating": "新增评分",
+    "priceNotProvided": "价格未提供",
+    "roomTypeNotProvided": "房型未提供",
+    "coordinateLocation": "坐标位置"
+  },
+  "sidebar": {
+    "newFeatures": "全新界面！",
+    "features": {
+      "modernForm": "现代化表单设计",
+      "mapSelection": "地图选点功能",
+      "starRating": "星级评分系统",
+      "facilityTags": "设施标签选择"
+    }
+  },
+  "messages": {
+    "success": {
+      "rentalAdded": "租房经验已成功新增！",
+      "ratingAdded": "评分已成功添加！"
+    },
+    "error": {
+      "loadFailed": "加载数据失败，请稍后再试。",
+      "addFailed": "新增失败，请稍后再试。",
+      "appInitFailed": "应用程序加载失败，请刷新页面。",
+      "addressNotFound": "无法找到该地址。",
+      "geocodingFailed": "获取地址失败",
+      "invalidRating": "请输入有效的评分 (1-5)"
+    },
+    "prompts": {
+      "enterName": "请输入您的姓名（可选）:",
+      "anonymousUser": "匿名用户",
+      "landlordRating": "房东评分 (1-5):",
+      "locationRating": "地点评分 (1-5):",
+      "valueRating": "性价比评分 (1-5):",
+      "enterComment": "请输入评论（可选）:"
+    },
+    "suggestions": {
+      "addressFormat": "建议尝试：",
+      "districtLevel": "北京市朝阳区（区级地址）",
+      "streetLevel": "北京市朝阳区建国路（路级地址）",
+      "landmark": "国贸中心（知名地标）"
+    }
+  },
+  "common": {
+    "loading": "加载中...",
+    "save": "保存",
+    "edit": "编辑",
+    "delete": "删除",
+    "back": "返回",
+    "next": "下一步",
+    "previous": "上一步",
+    "search": "搜索",
+    "filter": "筛选",
+    "sort": "排序",
+    "refresh": "刷新"
+  }
+}

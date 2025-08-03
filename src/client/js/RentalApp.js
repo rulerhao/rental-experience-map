@@ -1,7 +1,7 @@
 class RentalApp {
     constructor() {
         this.mapManager = new MapManager();
-        this.listManager = new RentalListManager();
+        this.listManager = new RentalListManager(window.i18n);
         this.apiService = new ApiService();
         this.formManager = null; // 延遲初始化
         this.rentalData = [];
@@ -13,7 +13,7 @@ class RentalApp {
             this.mapManager.initMap();
             
             // 初始化表單管理器
-            this.formManager = new RentalFormManager(this.apiService, this.mapManager);
+            this.formManager = new RentalFormManager(this.apiService, this.mapManager, window.i18n);
             this.formManager.setOnSuccess(async (locationData) => {
                 // 重新載入資料並聚焦到新位置
                 await this.loadRentalData();
@@ -23,7 +23,8 @@ class RentalApp {
             await this.loadRentalData();
         } catch (error) {
             console.error('應用程式初始化失敗:', error);
-            alert('應用程式載入失敗，請重新整理頁面。');
+            const errorMsg = window.i18n ? window.i18n.t('messages.error.appInitFailed') : '應用程式載入失敗，請重新整理頁面。';
+            alert(errorMsg);
         }
     }
 
@@ -34,7 +35,8 @@ class RentalApp {
             this.displayRentals();
         } catch (error) {
             console.error('載入租屋資料錯誤:', error);
-            alert('載入資料失敗，請稍後再試。');
+            const errorMsg = window.i18n ? window.i18n.t('messages.error.loadFailed') : '載入資料失敗，請稍後再試。';
+            alert(errorMsg);
         }
     }
 

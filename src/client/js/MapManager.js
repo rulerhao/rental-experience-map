@@ -59,8 +59,11 @@ class MapManager {
     // 顯示租屋資訊
     showRentalInfo(rental, marker) {
         const starsHtml = this.generateStarsHtml(rental.overall_rating || 0);
-        const rentPrice = rental.rent_price ? `NT${rental.rent_price.toLocaleString()}` : '價格未提供';
-        const roomType = rental.room_type || '房型未提供';
+        const t = (key) => window.i18n ? window.i18n.t(key) : key;
+        const rentPrice = rental.rent_price ? 
+            (window.i18n ? window.i18n.formatCurrency(rental.rent_price) : `NT${rental.rent_price.toLocaleString()}`) : 
+            t('rental.priceNotProvided');
+        const roomType = rental.room_type || t('rental.roomTypeNotProvided');
         
         const content = `
             <div style="max-width: 300px;">
@@ -75,7 +78,7 @@ class MapManager {
                     ${rental.area_size ? ` | ${rental.area_size}坪` : ''}
                 </div>
                 <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;">
-                    <small style="color: #999;">經緯度: ${rental.lat.toFixed(4)}, ${rental.lng.toFixed(4)}</small>
+                    <small style="color: #999;">${window.i18n ? window.i18n.t('map.coordinates') : '經緯度'}: ${rental.lat.toFixed(4)}, ${rental.lng.toFixed(4)}</small>
                 </div>
             </div>
         `;
@@ -178,16 +181,17 @@ class MapManager {
         }).addTo(this.map);
         
         // 顯示位置資訊
+        const t = (key) => window.i18n ? window.i18n.t(key) : key;
         this.tempMarker.bindPopup(`
             <div style="text-align: center;">
-                <h4 style="margin: 0 0 10px 0; color: #4CAF50;">📍 選擇的位置</h4>
+                <h4 style="margin: 0 0 10px 0; color: #4CAF50;">📍 ${t('map.selectedLocation')}</h4>
                 <p style="margin: 0; font-size: 12px; color: #666;">
-                    緯度: ${latlng.lat.toFixed(6)}<br>
-                    經度: ${latlng.lng.toFixed(6)}
+                    ${t('map.latitude')}: ${latlng.lat.toFixed(6)}<br>
+                    ${t('map.longitude')}: ${latlng.lng.toFixed(6)}
                 </p>
                 <div style="margin-top: 10px;">
-                    <button onclick="window.mapManager.confirmLocationSelection()" style="background: #4CAF50; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-right: 5px;">確認</button>
-                    <button onclick="window.mapManager.cancelLocationSelection()" style="background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">取消</button>
+                    <button onclick="window.mapManager.confirmLocationSelection()" style="background: #4CAF50; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-right: 5px;">${t('map.confirm')}</button>
+                    <button onclick="window.mapManager.cancelLocationSelection()" style="background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">${t('map.cancel')}</button>
                 </div>
             </div>
         `).openPopup();
@@ -242,7 +246,8 @@ class MapManager {
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
             animation: fadeIn 0.3s ease-in;
         `;
-        hint.innerHTML = '📍 請在地圖上點擊選擇租屋位置';
+        const hintText = window.i18n ? window.i18n.t('map.selectLocationHint') : '請在地圖上點擊選擇租屋位置';
+        hint.innerHTML = '📍 ' + hintText;
         
         // 添加到地圖容器
         const mapContainer = document.getElementById('map');
@@ -290,11 +295,13 @@ class MapManager {
             if (data && data.display_name) {
                 return data.display_name;
             } else {
-                return `座標位置 (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+                const coordText = window.i18n ? window.i18n.t('rental.coordinateLocation') : '座標位置';
+                return `${coordText} (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
             }
         } catch (error) {
             console.error('反向地理編碼錯誤:', error);
-            return `座標位置 (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+            const coordText = window.i18n ? window.i18n.t('rental.coordinateLocation') : '座標位置';
+            return `${coordText} (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
         }
     }
 }

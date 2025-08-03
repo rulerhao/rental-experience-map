@@ -162,20 +162,22 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>租屋經驗分享地圖</h1>
-            <p>分享你的租屋經驗，幫助其他人找到好房子</p>
+            <div class="header-content">
+                <h1 data-i18n="app.title">租屋經驗分享地圖</h1>
+                <p data-i18n="app.subtitle">分享你的租屋經驗，幫助其他人找到好房子</p>
+            </div>
         </div>
 
         <div class="content">
             <div class="sidebar">
-                <button class="add-btn" onclick="addNewRental()">📍 新增租屋經驗</button>
+                <button class="add-btn" onclick="addNewRental()">📍 <span data-i18n="rental.addNew">新增租屋經驗</span></button>
                 
                 <div class="info-box">
-                    <strong>🆕 全新界面！</strong><br>
-                    • 現代化表單設計<br>
-                    • 地圖選點功能<br>
-                    • 星級評分系統<br>
-                    • 設施標籤選擇
+                    <strong>🆕 <span data-i18n="sidebar.newFeatures">全新界面！</span></strong><br>
+                    • <span data-i18n="sidebar.features.modernForm">現代化表單設計</span><br>
+                    • <span data-i18n="sidebar.features.mapSelection">地圖選點功能</span><br>
+                    • <span data-i18n="sidebar.features.starRating">星級評分系統</span><br>
+                    • <span data-i18n="sidebar.features.facilityTags">設施標籤選擇</span>
                 </div>
                 
                 <div id="rental-list">
@@ -198,6 +200,8 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <!-- 模組化 JavaScript 檔案 -->
+    <script src="src/client/js/I18nService.js"></script>
+    <script src="src/client/js/LanguageSelector.js"></script>
     <script src="src/client/js/ApiService.js"></script>
     <script src="src/client/js/MapManager.js"></script>
     <script src="src/client/js/RentalListManager.js"></script>

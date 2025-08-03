@@ -1,6 +1,14 @@
 class RentalListManager {
-    constructor() {
+    constructor(i18nService) {
         this.rentalList = document.getElementById('rental-list');
+        this.i18n = i18nService || window.i18n;
+        
+        // Subscribe to language changes
+        if (this.i18n) {
+            this.i18n.subscribe(() => {
+                this.updateListTexts();
+            });
+        }
     }
 
     // 清空租屋列表
@@ -25,8 +33,11 @@ class RentalListManager {
         item.dataset.id = rental.id;
         
         const starsHtml = this.generateStarsHtml(rental.overall_rating || 0);
-        const rentPrice = rental.rent_price ? `NT${rental.rent_price.toLocaleString()}` : '價格未提供';
-        const roomType = rental.room_type || '房型未提供';
+        const t = (key, params) => this.i18n ? this.i18n.t(key, params) : key;
+        const rentPrice = rental.rent_price ? 
+            (this.i18n ? this.i18n.formatCurrency(rental.rent_price) : `NT${rental.rent_price.toLocaleString()}`) : 
+            t('rental.priceNotProvided');
+        const roomType = rental.room_type || t('rental.roomTypeNotProvided');
         
         item.innerHTML = `
             <div class="rental-address">${rental.address}</div>
@@ -39,7 +50,7 @@ class RentalListManager {
                 ${roomType} | ${rentPrice}
                 ${rental.area_size ? ` | ${rental.area_size}坪` : ''}
             </div>
-            <button class="add-rating-btn" onclick="event.stopPropagation(); ${onAddRatingCallback ? `${onAddRatingCallback.name}(${rental.id})` : ''}">新增評分</button>
+            <button class="add-rating-btn" onclick="event.stopPropagation(); ${onAddRatingCallback ? `${onAddRatingCallback.name}(${rental.id})` : ''}" data-i18n="rental.addRating">${t('rental.addRating')}</button>
         `;
         
         // 點擊項目時的處理
@@ -93,6 +104,19 @@ class RentalListManager {
         }
         
         return starsHtml;
+    }
+
+    // Update list texts when language changes
+    updateListTexts() {
+        if (!this.i18n) return;
+        
+        const t = (key, params) => this.i18n.t(key, params);
+        
+        // Update all buttons with data-i18n attribute
+        this.rentalList.querySelectorAll('[data-i18n]').forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            element.textContent = t(key);
+        });
     }
 }
 

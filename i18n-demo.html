@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I18n Demo - Rental Experience Map</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: #2196F3;
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header-content {
+            flex: 1;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .header p {
+            margin: 5px 0 0 0;
+        }
+        .content {
+            padding: 20px;
+        }
+        .demo-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .demo-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .demo-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .demo-item strong {
+            color: #2196F3;
+        }
+        .test-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .test-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #4CAF50;
+            color: white;
+            font-size: 14px;
+        }
+        .test-btn:hover {
+            background: #45a049;
+        }
+        .currency-demo {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e91e63;
+        }
+        .date-demo {
+            font-size: 16px;
+            color: #9c27b0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1 data-i18n="app.title">租屋經驗分享地圖</h1>
+                <p data-i18n="app.subtitle">分享你的租屋經驗，幫助其他人找到好房子</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="demo-section">
+                <h3>Language Selector Demo</h3>
+                <p>The language selector should appear in the header above. Try switching between different languages to see the content update.</p>
+            </div>
+
+            <div class="demo-section">
+                <h3>Basic Translation Demo</h3>
+                <div class="demo-item">
+                    <strong>Form Title:</strong> <span data-i18n="form.title">新增租屋經驗</span>
+                </div>
+                <div class="demo-item">
+                    <strong>Form Subtitle:</strong> <span data-i18n="form.subtitle">分享你的租屋經驗，幫助其他人找到好房子</span>
+                </div>
+                <div class="demo-item">
+                    <strong>Location Title:</strong> <span data-i18n="form.location.title">位置資訊</span>
+                </div>
+                <div class="demo-item">
+                    <strong>Basic Info Title:</strong> <span data-i18n="form.basicInfo.title">基本資訊</span>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h3>Rating System Demo</h3>
+                <div class="demo-item">
+                    <strong>Rating Title:</strong> <span data-i18n="form.rating.title">評分</span>
+                </div>
+                <div class="demo-item">
+                    <strong>Landlord Rating:</strong> <span data-i18n="form.rating.landlord">房東評分</span>
+                </div>
+                <div class="demo-item">
+                    <strong>Location Rating:</strong> <span data-i18n="form.rating.location">地點評分</span>
+                </div>
+                <div class="demo-item">
+                    <strong>Value Rating:</strong> <span data-i18n="form.rating.value">性價比評分</span>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h3>Facilities Demo</h3>
+                <div class="demo-item">
+                    <strong>Air Conditioning:</strong> <span data-i18n="form.facilities.aircon">冷氣</span>
+                </div>
+                <div class="demo-item">
+                    <strong>Internet:</strong> <span data-i18n="form.facilities.internet">網路</span>
+                </div>
+                <div class="demo-item">
+                    <strong>Parking:</strong> <span data-i18n="form.facilities.parking">停車位</span>
+                </div>
+                <div class="demo-item">
+                    <strong>Elevator:</strong> <span data-i18n="form.facilities.elevator">電梯</span>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h3>Messages Demo</h3>
+                <div class="demo-item">
+                    <strong>Success Message:</strong> <span data-i18n="messages.success.rentalAdded">租屋經驗已成功新增！</span>
+                </div>
+                <div class="demo-item">
+                    <strong>Error Message:</strong> <span data-i18n="messages.error.loadFailed">載入資料失敗，請稍後再試。</span>
+                </div>
+                <div class="demo-item">
+                    <strong>Validation Message:</strong> <span data-i18n="form.validation.completeRatings">請完成所有評分項目</span>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h3>Formatting Demo</h3>
+                <div class="demo-item">
+                    <strong>Currency:</strong> <span class="currency-demo" id="currencyDemo">NT$25,000</span>
+                </div>
+                <div class="demo-item">
+                    <strong>Date:</strong> <span class="date-demo" id="dateDemo">2025-01-08</span>
+                </div>
+                <div class="demo-item">
+                    <strong>Number:</strong> <span id="numberDemo">1,234.56</span>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h3>Interactive Tests</h3>
+                <div class="test-buttons">
+                    <button class="test-btn" onclick="testAlert()">Test Alert Message</button>
+                    <button class="test-btn" onclick="testPrompt()">Test Prompt Message</button>
+                    <button class="test-btn" onclick="testSuccess()">Test Success Message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include i18n system -->
+    <script src="src/client/js/I18nService.js"></script>
+    <script src="src/client/js/LanguageSelector.js"></script>
+
+    <script>
+        let languageSelector;
+
+        // Test functions
+        function testAlert() {
+            const message = window.i18n ? window.i18n.t('messages.error.addFailed') : 'Add failed';
+            alert(message);
+        }
+
+        function testPrompt() {
+            const message = window.i18n ? window.i18n.t('messages.prompts.enterName') : 'Please enter your name:';
+            const result = prompt(message);
+            if (result) {
+                const successMsg = window.i18n ? window.i18n.t('messages.success.rentalAdded') : 'Success!';
+                alert(successMsg);
+            }
+        }
+
+        function testSuccess() {
+            const message = window.i18n ? window.i18n.t('messages.success.rentalAdded') : 'Success!';
+            
+            // Create success notification
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #4caf50;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 1001;
+                font-weight: 500;
+            `;
+            successDiv.innerHTML = '✅ ' + message;
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.remove();
+            }, 3000);
+        }
+
+        // Update page texts
+        function updatePageTexts() {
+            if (!window.i18n) return;
+            
+            // Update all elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                element.textContent = window.i18n.t(key);
+            });
+
+            // Update formatted content
+            updateFormattedContent();
+        }
+
+        function updateFormattedContent() {
+            if (!window.i18n) return;
+
+            // Update currency
+            const currencyDemo = document.getElementById('currencyDemo');
+            if (currencyDemo) {
+                currencyDemo.textContent = window.i18n.formatCurrency(25000);
+            }
+
+            // Update date
+            const dateDemo = document.getElementById('dateDemo');
+            if (dateDemo) {
+                const now = new Date();
+                dateDemo.textContent = window.i18n.formatDate(now, { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            }
+
+            // Update number
+            const numberDemo = document.getElementById('numberDemo');
+            if (numberDemo) {
+                numberDemo.textContent = window.i18n.formatNumber(1234.56, { 
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Initialize i18n system
+                await window.i18n.init();
+                
+                // Initialize language selector
+                languageSelector = new LanguageSelector(window.i18n);
+                
+                // Subscribe to language changes
+                window.i18n.subscribe(() => {
+                    updatePageTexts();
+                });
+                
+                // Initial update
+                updatePageTexts();
+                
+                console.log('I18n demo initialized successfully');
+            } catch (error) {
+                console.error('Failed to initialize i18n demo:', error);
+                alert('Failed to load i18n system. Please check the console for errors.');
+            }
+        });
+    </script>
+</body>
+</html>

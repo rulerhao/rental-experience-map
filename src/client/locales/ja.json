@@ -1,0 +1,149 @@
+{
+  "app": {
+    "title": "賃貸体験共有マップ",
+    "subtitle": "あなたの賃貸体験を共有して、他の人が良い物件を見つけるのを手助けしましょう"
+  },
+  "navigation": {
+    "language": "言語",
+    "about": "について",
+    "help": "ヘルプ"
+  },
+  "form": {
+    "title": "賃貸体験を追加",
+    "subtitle": "あなたの賃貸体験を共有して、他の人が良い物件を見つけるのを手助けしましょう",
+    "close": "閉じる",
+    "cancel": "キャンセル",
+    "submit": "賃貸体験を追加",
+    "submitting": "追加中...",
+    "required": "必須",
+    "location": {
+      "title": "位置情報",
+      "mapSelection": "地図選択",
+      "mapSelectionDesc": "地図上で位置を選択",
+      "selectPrompt": "賃貸位置を選択してください",
+      "selectPromptDesc": "上のボタンをクリックして地図上で選択を開始",
+      "selected": "位置が選択されました",
+      "clickToSelect": "地図上をクリックして賃貸位置を選択してください"
+    },
+    "basicInfo": {
+      "title": "基本情報",
+      "description": "賃貸体験の説明",
+      "descriptionPlaceholder": "物件の状態、周辺環境、大家との関係など、賃貸体験を詳しく説明してください...",
+      "descriptionRequired": "賃貸体験の説明を入力してください",
+      "rentPrice": "家賃（円/月）",
+      "rentPricePlaceholder": "80000",
+      "roomType": "部屋タイプ",
+      "roomTypeSelect": "選択してください",
+      "areaSize": "面積（㎡）",
+      "areaSizePlaceholder": "25.0",
+      "facilities": "物件設備",
+      "facilitiesPlaceholder": "下のタグを選択するか手動で入力、カンマで区切る"
+    },
+    "roomTypes": {
+      "studio": "ワンルーム",
+      "shared": "シェアルーム",
+      "sharedStudio": "シェアワンルーム",
+      "wholeFloor": "一戸建て",
+      "independent": "独立ワンルーム",
+      "other": "その他"
+    },
+    "facilities": {
+      "aircon": "エアコン",
+      "washingMachine": "洗濯機",
+      "internet": "インターネット",
+      "tv": "テレビ",
+      "fridge": "冷蔵庫",
+      "waterHeater": "給湯器",
+      "parking": "駐車場",
+      "elevator": "エレベーター",
+      "balcony": "バルコニー",
+      "kitchen": "キッチン"
+    },
+    "rating": {
+      "title": "評価",
+      "landlord": "大家評価",
+      "location": "立地評価",
+      "value": "コスパ評価",
+      "selectRating": "評価を選択してください",
+      "ratingText": {
+        "1": "とても悪い",
+        "2": "悪い",
+        "3": "普通",
+        "4": "良い",
+        "5": "とても良い"
+      }
+    },
+    "validation": {
+      "selectLocation": "位置を選択するか住所を入力してください",
+      "enterDescription": "賃貸体験の説明を入力してください",
+      "completeRatings": "すべての評価項目を完了してください",
+      "selectLocationFirst": "まず地図上で位置を選択してください"
+    }
+  },
+  "map": {
+    "selectLocationHint": "地図上をクリックして賃貸位置を選択してください",
+    "selectedLocation": "選択された位置",
+    "confirm": "確認",
+    "cancel": "キャンセル",
+    "latitude": "緯度",
+    "longitude": "経度",
+    "coordinates": "座標"
+  },
+  "rental": {
+    "addNew": "賃貸体験を追加",
+    "addRating": "評価を追加",
+    "priceNotProvided": "価格未提供",
+    "roomTypeNotProvided": "部屋タイプ未提供",
+    "coordinateLocation": "座標位置"
+  },
+  "sidebar": {
+    "newFeatures": "新しいインターフェース！",
+    "features": {
+      "modernForm": "モダンなフォームデザイン",
+      "mapSelection": "地図選択機能",
+      "starRating": "星評価システム",
+      "facilityTags": "設備タグ選択"
+    }
+  },
+  "messages": {
+    "success": {
+      "rentalAdded": "賃貸体験が正常に追加されました！",
+      "ratingAdded": "評価が正常に追加されました！"
+    },
+    "error": {
+      "loadFailed": "データの読み込みに失敗しました。後でもう一度お試しください。",
+      "addFailed": "追加に失敗しました。後でもう一度お試しください。",
+      "appInitFailed": "アプリケーションの読み込みに失敗しました。ページを更新してください。",
+      "addressNotFound": "住所が見つかりません。",
+      "geocodingFailed": "住所の取得に失敗しました",
+      "invalidRating": "有効な評価を入力してください (1-5)"
+    },
+    "prompts": {
+      "enterName": "お名前を入力してください（任意）:",
+      "anonymousUser": "匿名ユーザー",
+      "landlordRating": "大家評価 (1-5):",
+      "locationRating": "立地評価 (1-5):",
+      "valueRating": "コスパ評価 (1-5):",
+      "enterComment": "コメントを入力してください（任意）:"
+    },
+    "suggestions": {
+      "addressFormat": "試してみてください：",
+      "districtLevel": "東京都渋谷区（区レベル）",
+      "streetLevel": "東京都渋谷区渋谷（街レベル）",
+      "landmark": "渋谷駅（有名なランドマーク）"
+    }
+  },
+  "common": {
+    "loading": "読み込み中...",
+    "save": "保存",
+    "edit": "編集",
+    "delete": "削除",
+    "back": "戻る",
+    "next": "次へ",
+    "previous": "前へ",
+    "search": "検索",
+    "filter": "フィルター",
+    "sort": "並び替え",
+    "refresh": "更新"
+  }
+}

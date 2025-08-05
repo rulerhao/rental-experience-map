@@ -135,6 +135,16 @@
       "landmark": "Taipei 101 (landmark)"
     }
   },
+  "filters": {
+    "title": "Filter Conditions",
+    "clearAll": "Clear All",
+    "all": "All",
+    "roomType": "Room Type",
+    "district": "District",
+    "rating": "Minimum Rating",
+    "facilities": "Facilities",
+    "priceRange": "Price Range"
+  },
   "common": {
     "loading": "Loading...",
     "save": "Save",

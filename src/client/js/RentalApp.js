@@ -3,8 +3,10 @@ class RentalApp {
         this.mapManager = new MapManager();
         this.listManager = new RentalListManager(window.i18n);
         this.apiService = new ApiService();
+        this.filterManager = new FilterManager(window.i18n);
         this.formManager = null; // 延遲初始化
         this.rentalData = [];
+        this.filteredData = [];
     }
 
     // 初始化應用程式
@@ -20,6 +22,12 @@ class RentalApp {
                 this.mapManager.focusOnLocation(locationData.lat, locationData.lng);
             });
             
+            // 設定篩選器回調
+            this.filterManager.setOnFilterChange((filteredRentals) => {
+                this.filteredData = filteredRentals;
+                this.displayFilteredRentals();
+            });
+            
             await this.loadRentalData();
         } catch (error) {
             console.error('應用程式初始化失敗:', error);
@@ -32,6 +40,11 @@ class RentalApp {
     async loadRentalData() {
         try {
             this.rentalData = await this.apiService.getRentals();
+            this.filteredData = [...this.rentalData]; // 初始時顯示所有資料
+            
+            // 更新篩選器的資料
+            this.filterManager.setRentals(this.rentalData);
+            
             this.displayRentals();
         } catch (error) {
             console.error('載入租屋資料錯誤:', error);
@@ -42,11 +55,16 @@ class RentalApp {
 
     // 顯示租屋資料
     displayRentals() {
+        this.displayFilteredRentals();
+    }
+
+    // 顯示篩選後的租屋資料
+    displayFilteredRentals() {
         // 清除現有資料
         this.mapManager.clearMarkers();
         this.listManager.clearList();
 
-        this.rentalData.forEach(rental => {
+        this.filteredData.forEach(rental => {
             // 在地圖上添加標記
             this.mapManager.addRentalMarker(rental, (rentalId) => {
                 this.listManager.highlightItem(rentalId);
@@ -57,6 +75,18 @@ class RentalApp {
                 this.onRentalItemClick(rental);
             }, this.addRating);
         });
+
+        // 更新篩選結果統計
+        this.updateFilterStats();
+    }
+
+    // 更新篩選統計
+    updateFilterStats() {
+        const totalCount = this.rentalData.length;
+        const filteredCount = this.filteredData.length;
+        
+        // 可以在這裡添加顯示篩選統計的邏輯
+        console.log(`顯示 ${filteredCount} / ${totalCount} 筆租屋資料`);
     }
 
     // 處理租屋項目點擊

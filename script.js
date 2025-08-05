@@ -16,6 +16,13 @@ async function addNewRental() {
     }
 }
 
+// 清除所有篩選條件函數（保持全域以供 HTML 調用）
+function clearAllFilters() {
+    if (rentalApp && rentalApp.filterManager) {
+        rentalApp.filterManager.clearAllFilters();
+    }
+}
+
 // 更新頁面文字的函數
 function updatePageTexts() {
     if (!window.i18n) return;

@@ -135,6 +135,16 @@
       "landmark": "台北101（知名地標）"
     }
   },
+  "filters": {
+    "title": "篩選條件",
+    "clearAll": "清除全部",
+    "all": "全部",
+    "roomType": "房型",
+    "district": "行政區",
+    "rating": "最低評分",
+    "facilities": "設施",
+    "priceRange": "租金範圍"
+  },
   "common": {
     "loading": "載入中...",
     "save": "儲存",

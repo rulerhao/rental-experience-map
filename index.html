@@ -156,6 +156,106 @@
         .info-box strong {
             color: #1b5e20;
         }
+
+        /* 篩選器樣式 */
+        .filter-section {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .filter-header h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .clear-filters-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .clear-filters-btn:hover {
+            background: #5a6268;
+        }
+
+        .filter-group {
+            margin-bottom: 15px;
+        }
+
+        .filter-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #2196F3;
+            box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+        }
+
+        .facility-filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .facility-checkbox {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .facility-checkbox input {
+            margin-right: 6px;
+        }
+
+        .price-range {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .price-input {
+            flex: 1;
+            padding: 6px 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .price-input:focus {
+            outline: none;
+            border-color: #2196F3;
+            box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+        }
     </style>
 </head>
 
@@ -171,6 +271,89 @@
         <div class="content">
             <div class="sidebar">
                 <button class="add-btn" onclick="addNewRental()">📍 <span data-i18n="rental.addNew">新增租屋經驗</span></button>
+                
+                <!-- 篩選器區塊 -->
+                <div class="filter-section">
+                    <div class="filter-header">
+                        <h3 data-i18n="filters.title">篩選條件</h3>
+                        <button class="clear-filters-btn" onclick="clearAllFilters()" data-i18n="filters.clearAll">清除全部</button>
+                    </div>
+                    
+                    <!-- 房型篩選 -->
+                    <div class="filter-group">
+                        <label class="filter-label" data-i18n="filters.roomType">房型</label>
+                        <select id="roomTypeFilter" class="filter-select">
+                            <option value="" data-i18n="filters.all">全部</option>
+                            <option value="套房" data-i18n="form.roomTypes.studio">套房</option>
+                            <option value="雅房" data-i18n="form.roomTypes.shared">雅房</option>
+                            <option value="分租套房" data-i18n="form.roomTypes.sharedStudio">分租套房</option>
+                            <option value="整層住家" data-i18n="form.roomTypes.wholeFloor">整層住家</option>
+                            <option value="獨立套房" data-i18n="form.roomTypes.independent">獨立套房</option>
+                            <option value="其他" data-i18n="form.roomTypes.other">其他</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 行政區篩選 -->
+                    <div class="filter-group">
+                        <label class="filter-label" data-i18n="filters.district">行政區</label>
+                        <select id="districtFilter" class="filter-select">
+                            <option value="" data-i18n="filters.all">全部</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 評分篩選 -->
+                    <div class="filter-group">
+                        <label class="filter-label" data-i18n="filters.rating">最低評分</label>
+                        <select id="ratingFilter" class="filter-select">
+                            <option value="" data-i18n="filters.all">全部</option>
+                            <option value="4">4星以上 ⭐⭐⭐⭐</option>
+                            <option value="3">3星以上 ⭐⭐⭐</option>
+                            <option value="2">2星以上 ⭐⭐</option>
+                            <option value="1">1星以上 ⭐</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 設施篩選 -->
+                    <div class="filter-group">
+                        <label class="filter-label" data-i18n="filters.facilities">設施</label>
+                        <div class="facility-filters">
+                            <label class="facility-checkbox">
+                                <input type="checkbox" value="冷氣" data-facility="aircon">
+                                <span data-i18n="form.facilities.aircon">冷氣</span>
+                            </label>
+                            <label class="facility-checkbox">
+                                <input type="checkbox" value="洗衣機" data-facility="washingMachine">
+                                <span data-i18n="form.facilities.washingMachine">洗衣機</span>
+                            </label>
+                            <label class="facility-checkbox">
+                                <input type="checkbox" value="網路" data-facility="internet">
+                                <span data-i18n="form.facilities.internet">網路</span>
+                            </label>
+                            <label class="facility-checkbox">
+                                <input type="checkbox" value="電視" data-facility="tv">
+                                <span data-i18n="form.facilities.tv">電視</span>
+                            </label>
+                            <label class="facility-checkbox">
+                                <input type="checkbox" value="冰箱" data-facility="fridge">
+                                <span data-i18n="form.facilities.fridge">冰箱</span>
+                            </label>
+                            <label class="facility-checkbox">
+                                <input type="checkbox" value="停車位" data-facility="parking">
+                                <span data-i18n="form.facilities.parking">停車位</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- 租金範圍篩選 -->
+                    <div class="filter-group">
+                        <label class="filter-label" data-i18n="filters.priceRange">租金範圍</label>
+                        <div class="price-range">
+                            <input type="number" id="minPrice" placeholder="最低" class="price-input">
+                            <span>-</span>
+                            <input type="number" id="maxPrice" placeholder="最高" class="price-input">
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="info-box">
                     <strong>🆕 <span data-i18n="sidebar.newFeatures">全新界面！</span></strong><br>
@@ -205,6 +388,7 @@
     <script src="src/client/js/ApiService.js"></script>
     <script src="src/client/js/MapManager.js"></script>
     <script src="src/client/js/RentalListManager.js"></script>
+    <script src="src/client/js/FilterManager.js"></script>
     <script src="src/client/js/RentalFormManager.js"></script>
     <script src="src/client/js/RentalApp.js"></script>
     <script src="script.js"></script>

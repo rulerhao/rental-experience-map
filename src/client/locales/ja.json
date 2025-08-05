@@ -133,6 +133,16 @@
       "landmark": "渋谷駅（有名なランドマーク）"
     }
   },
+  "filters": {
+    "title": "フィルター条件",
+    "clearAll": "すべてクリア",
+    "all": "すべて",
+    "roomType": "部屋タイプ",
+    "district": "行政区",
+    "rating": "最低評価",
+    "facilities": "設備",
+    "priceRange": "家賃範囲"
+  },
   "common": {
     "loading": "読み込み中...",
     "save": "保存",

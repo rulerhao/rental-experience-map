@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>篩選功能測試</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>租屋篩選功能測試</h1>
+        
+        <div class="test-section">
+            <div class="test-title">1. FilterManager 類別測試</div>
+            <button onclick="testFilterManagerClass()">測試 FilterManager 類別</button>
+            <div id="filterManagerTest"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">2. 行政區提取功能測試</div>
+            <button onclick="testDistrictExtraction()">測試行政區提取</button>
+            <div id="districtTest"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">3. 房型篩選測試</div>
+            <button onclick="testRoomTypeFilter()">測試房型篩選</button>
+            <div id="roomTypeTest"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">4. 評分篩選測試</div>
+            <button onclick="testRatingFilter()">測試評分篩選</button>
+            <div id="ratingTest"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">5. 設施篩選測試</div>
+            <button onclick="testFacilityFilter()">測試設施篩選</button>
+            <div id="facilityTest"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">6. 租金範圍篩選測試</div>
+            <button onclick="testPriceRangeFilter()">測試租金範圍篩選</button>
+            <div id="priceRangeTest"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">7. 綜合篩選測試</div>
+            <button onclick="testCombinedFilters()">測試綜合篩選</button>
+            <div id="combinedTest"></div>
+        </div>
+    </div>
+
+    <!-- 載入必要的腳本 -->
+    <script src="src/client/js/FilterManager.js"></script>
+    
+    <script>
+        // 測試資料
+        const testRentals = [
+            {
+                id: 1,
+                address: "台北市信義區信義路五段7號",
+                room_type: "套房",
+                rent_price: 25000,
+                overall_rating: 4.2,
+                facilities: "冷氣,洗衣機,網路,電視"
+            },
+            {
+                id: 2,
+                address: "台北市中山區南京東路二段100號",
+                room_type: "雅房",
+                rent_price: 18000,
+                overall_rating: 4.5,
+                facilities: "冷氣,網路"
+            },
+            {
+                id: 3,
+                address: "新北市板橋區文化路一段188號",
+                room_type: "分租套房",
+                rent_price: 15000,
+                overall_rating: 3.8,
+                facilities: "洗衣機,網路,停車位"
+            },
+            {
+                id: 4,
+                address: "台中市西屯區台灣大道三段99號",
+                room_type: "套房",
+                rent_price: 20000,
+                overall_rating: 4.0,
+                facilities: "冷氣,洗衣機,網路,電視,冰箱"
+            },
+            {
+                id: 5,
+                address: "高雄市前金區中正四路211號",
+                room_type: "整層住家",
+                rent_price: 35000,
+                overall_rating: 4.8,
+                facilities: "冷氣,洗衣機,網路,電視,冰箱,停車位"
+            }
+        ];
+
+        let filterManager;
+
+        function showResult(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="test-result ${type}">${message}</div>`;
+        }
+
+        function testFilterManagerClass() {
+            try {
+                filterManager = new FilterManager();
+                filterManager.setRentals(testRentals);
+                showResult('filterManagerTest', '✅ FilterManager 類別創建成功', 'success');
+            } catch (error) {
+                showResult('filterManagerTest', `❌ FilterManager 類別創建失敗: ${error.message}`, 'error');
+            }
+        }
+
+        function testDistrictExtraction() {
+            if (!filterManager) {
+                showResult('districtTest', '❌ 請先測試 FilterManager 類別', 'error');
+                return;
+            }
+
+            const testCases = [
+                { address: "台北市信義區信義路五段7號", expected: "台北市信義區" },
+                { address: "新北市板橋區文化路一段188號", expected: "新北市板橋區" },
+                { address: "台中市西屯區台灣大道三段99號", expected: "台中市西屯區" },
+                { address: "高雄市前金區中正四路211號", expected: "高雄市前金區" }
+            ];
+
+            let results = [];
+            testCases.forEach(testCase => {
+                const result = filterManager.extractDistrict(testCase.address);
+                const success = result === testCase.expected;
+                results.push(`${success ? '✅' : '❌'} ${testCase.address} → ${result} (期望: ${testCase.expected})`);
+            });
+
+            showResult('districtTest', results.join('<br>'), 'info');
+        }
+
+        function testRoomTypeFilter() {
+            if (!filterManager) {
+                showResult('roomTypeTest', '❌ 請先測試 FilterManager 類別', 'error');
+                return;
+            }
+
+            // 測試套房篩選
+            filterManager.filters.roomType = '套房';
+            filterManager.setOnFilterChange((filtered) => {
+                const expectedCount = testRentals.filter(r => r.room_type === '套房').length;
+                const actualCount = filtered.length;
+                const success = actualCount === expectedCount;
+                
+                showResult('roomTypeTest', 
+                    `${success ? '✅' : '❌'} 套房篩選: 找到 ${actualCount} 筆，期望 ${expectedCount} 筆<br>` +
+                    `篩選結果: ${filtered.map(r => `ID${r.id}(${r.room_type})`).join(', ')}`, 
+                    success ? 'success' : 'error'
+                );
+            });
+            filterManager.applyFilters();
+        }
+
+        function testRatingFilter() {
+            if (!filterManager) {
+                showResult('ratingTest', '❌ 請先測試 FilterManager 類別', 'error');
+                return;
+            }
+
+            // 重置篩選
+            filterManager.filters = { roomType: '', district: '', rating: '', facilities: [], minPrice: null, maxPrice: null };
+            
+            // 測試4星以上篩選
+            filterManager.filters.rating = '4';
+            filterManager.setOnFilterChange((filtered) => {
+                const expectedCount = testRentals.filter(r => r.overall_rating >= 4).length;
+                const actualCount = filtered.length;
+                const success = actualCount === expectedCount;
+                
+                showResult('ratingTest', 
+                    `${success ? '✅' : '❌'} 4星以上篩選: 找到 ${actualCount} 筆，期望 ${expectedCount} 筆<br>` +
+                    `篩選結果: ${filtered.map(r => `ID${r.id}(${r.overall_rating}星)`).join(', ')}`, 
+                    success ? 'success' : 'error'
+                );
+            });
+            filterManager.applyFilters();
+        }
+
+        function testFacilityFilter() {
+            if (!filterManager) {
+                showResult('facilityTest', '❌ 請先測試 FilterManager 類別', 'error');
+                return;
+            }
+
+            // 重置篩選
+            filterManager.filters = { roomType: '', district: '', rating: '', facilities: [], minPrice: null, maxPrice: null };
+            
+            // 測試有冷氣和網路的篩選
+            filterManager.filters.facilities = ['冷氣', '網路'];
+            filterManager.setOnFilterChange((filtered) => {
+                const expectedRentals = testRentals.filter(r => {
+                    const facilities = r.facilities ? r.facilities.split(',').map(f => f.trim()) : [];
+                    return facilities.includes('冷氣') && facilities.includes('網路');
+                });
+                const expectedCount = expectedRentals.length;
+                const actualCount = filtered.length;
+                const success = actualCount === expectedCount;
+                
+                showResult('facilityTest', 
+                    `${success ? '✅' : '❌'} 冷氣+網路篩選: 找到 ${actualCount} 筆，期望 ${expectedCount} 筆<br>` +
+                    `篩選結果: ${filtered.map(r => `ID${r.id}(${r.facilities})`).join('<br>')}`, 
+                    success ? 'success' : 'error'
+                );
+            });
+            filterManager.applyFilters();
+        }
+
+        function testPriceRangeFilter() {
+            if (!filterManager) {
+                showResult('priceRangeTest', '❌ 請先測試 FilterManager 類別', 'error');
+                return;
+            }
+
+            // 重置篩選
+            filterManager.filters = { roomType: '', district: '', rating: '', facilities: [], minPrice: null, maxPrice: null };
+            
+            // 測試租金範圍 15000-25000
+            filterManager.filters.minPrice = 15000;
+            filterManager.filters.maxPrice = 25000;
+            filterManager.setOnFilterChange((filtered) => {
+                const expectedCount = testRentals.filter(r => r.rent_price >= 15000 && r.rent_price <= 25000).length;
+                const actualCount = filtered.length;
+                const success = actualCount === expectedCount;
+                
+                showResult('priceRangeTest', 
+                    `${success ? '✅' : '❌'} 租金15000-25000篩選: 找到 ${actualCount} 筆，期望 ${expectedCount} 筆<br>` +
+                    `篩選結果: ${filtered.map(r => `ID${r.id}(NT$${r.rent_price})`).join(', ')}`, 
+                    success ? 'success' : 'error'
+                );
+            });
+            filterManager.applyFilters();
+        }
+
+        function testCombinedFilters() {
+            if (!filterManager) {
+                showResult('combinedTest', '❌ 請先測試 FilterManager 類別', 'error');
+                return;
+            }
+
+            // 重置篩選
+            filterManager.filters = { roomType: '', district: '', rating: '', facilities: [], minPrice: null, maxPrice: null };
+            
+            // 測試綜合篩選：套房 + 4星以上 + 有冷氣
+            filterManager.filters.roomType = '套房';
+            filterManager.filters.rating = '4';
+            filterManager.filters.facilities = ['冷氣'];
+            
+            filterManager.setOnFilterChange((filtered) => {
+                const expectedRentals = testRentals.filter(r => {
+                    const facilities = r.facilities ? r.facilities.split(',').map(f => f.trim()) : [];
+                    return r.room_type === '套房' && 
+                           r.overall_rating >= 4 && 
+                           facilities.includes('冷氣');
+                });
+                const expectedCount = expectedRentals.length;
+                const actualCount = filtered.length;
+                const success = actualCount === expectedCount;
+                
+                showResult('combinedTest', 
+                    `${success ? '✅' : '❌'} 綜合篩選(套房+4星以上+冷氣): 找到 ${actualCount} 筆，期望 ${expectedCount} 筆<br>` +
+                    `篩選結果: ${filtered.map(r => `ID${r.id}(${r.room_type}, ${r.overall_rating}星, ${r.facilities})`).join('<br>')}`, 
+                    success ? 'success' : 'error'
+                );
+            });
+            filterManager.applyFilters();
+        }
+    </script>
+</body>
+</html>

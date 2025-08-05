@@ -146,7 +146,7 @@ class RentalFormManager {
                                         <span class="facility-tag" data-facility="冷氣">❄️ ${t('form.facilities.aircon')}</span>
                                         <span class="facility-tag" data-facility="洗衣機">🧺 ${t('form.facilities.washingMachine')}</span>
                                         <span class="facility-tag" data-facility="網路">🌐 ${t('form.facilities.internet')}</span>
-                                        <span class="facility-tag" data-facility="電視">� ${t('foram.facilities.tv')}</span>
+                                        <span class="facility-tag" data-facility="電視">📺 ${t('form.facilities.tv')}</span>
                                         <span class="facility-tag" data-facility="冰箱">🧊 ${t('form.facilities.fridge')}</span>
                                         <span class="facility-tag" data-facility="熱水器">🚿 ${t('form.facilities.waterHeater')}</span>
                                         <span class="facility-tag" data-facility="停車位">🚗 ${t('form.facilities.parking')}</span>
